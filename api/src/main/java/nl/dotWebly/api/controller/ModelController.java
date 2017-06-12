@@ -8,7 +8,10 @@ import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 /**
  * Created by Rick Fleuren on 6/9/2017.
@@ -19,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 public class ModelController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelController.class);
 
+    @Value("${default.namespace}")
+    String defaultNamespace;
+
     @Autowired
     private TripleStoreClient client;
 
@@ -28,13 +34,15 @@ public class ModelController {
     }
 
     @RequestMapping("/{subject}")
-    public Model getModelBySubject(@PathVariable(name = "subject") String subject) {
-        return client.queryBySubject(subject);
+    public Model getModel(@PathVariable("subject") String subject, @RequestParam(value = "namespace", required = false) String namespace) {
+        String resultingNamespace = getNamespace(namespace);
+        return client.queryBySubject(resultingNamespace + subject);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
-    public Model addModel(Model model) {
-        return client.query();
+    @RequestMapping(method = RequestMethod.DELETE)
+    public void deleteModel(@PathVariable("subject") String subject, @RequestParam(value = "namespace", required = false) String namespace) {
+        String resultingNamespace = getNamespace(namespace);
+        client.deleteBySubject(resultingNamespace + subject);
     }
 
     @RequestMapping("/insert-testdata")
@@ -52,5 +60,9 @@ public class ModelController {
         client.save(model);
 
         return "done!";
+    }
+
+    private String getNamespace(String namespace) {
+        return namespace == null ? defaultNamespace : namespace;
     }
 }

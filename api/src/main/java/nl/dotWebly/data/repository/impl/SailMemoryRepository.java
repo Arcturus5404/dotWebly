@@ -4,6 +4,7 @@ import nl.dotWebly.data.repository.TripleStoreRepository;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
+import org.springframework.context.annotation.Primary;
 
 import java.io.File;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.Optional;
  */
 
 @org.springframework.stereotype.Repository
+@Primary
 public class SailMemoryRepository implements TripleStoreRepository {
     private Repository repository;
 
@@ -25,7 +27,10 @@ public class SailMemoryRepository implements TripleStoreRepository {
         memoryStore.setPersist(true);
 
         repository = new org.eclipse.rdf4j.repository.sail.SailRepository(memoryStore);
-        clearAllData();
+
+        if(clearData) {
+            clearAllData();
+        }
     }
 
     private void clearAllData() {

@@ -34,6 +34,7 @@ public class TripleStoreClientImpl implements TripleStoreClient {
         doQuery(c -> c.add(model));
     }
 
+    @Override
     public Model query() {
         Model model = new LinkedHashModel();
         getStatements(result -> Iterations.addAll(result, model));
@@ -49,10 +50,7 @@ public class TripleStoreClientImpl implements TripleStoreClient {
         return model;
     }
 
-    /**
-     * Query will query the triple store and return models grouped by subject.
-     * @return
-     */
+    @Override
     public List<Model> queryGroupedBySubject() {
         Map<Resource, Model> modelMap = new HashMap<>();
         getStatements(result -> {
@@ -68,6 +66,14 @@ public class TripleStoreClientImpl implements TripleStoreClient {
             }
         });
         return new ArrayList<>(modelMap.values());
+    }
+
+    @Override
+    public void deleteBySubject(String subject) {
+        doQuery(connection -> {
+            IRI subjectIri = connection.getValueFactory().createIRI(subject);
+            connection.remove(subjectIri, null, null);
+        });
     }
 
     private void getStatements(Consumer<RepositoryResult<Statement>> consumer) {

@@ -2,7 +2,10 @@ package nl.dotWebly.api;
 
 import nl.dotWebly.api.converter.RdfMessageConverter;
 import org.eclipse.rdf4j.rio.RDFFormat;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -18,6 +21,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
+@PropertySource("classpath:settings.properties")
 public class ApiConfiguration extends WebMvcConfigurerAdapter {
 
     private RdfMessageConverter ttlConverter;
@@ -61,4 +65,8 @@ public class ApiConfiguration extends WebMvcConfigurerAdapter {
         converters.add(rdfJsonConverter);
     }
 
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 }

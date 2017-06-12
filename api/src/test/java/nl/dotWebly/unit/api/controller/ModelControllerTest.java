@@ -26,6 +26,8 @@ public class ModelControllerTest {
     @Mock
     TripleStoreClient client;
 
+
+
     @InjectMocks
     private ModelController controller = new ModelController();
 
@@ -42,14 +44,28 @@ public class ModelControllerTest {
         assertEquals("Models should be the same", model, result);
     }
 
+
+    @Test
+    public void testModelBySubjectDefaultNamespace() {
+        //arrange
+        LinkedHashModel model = new LinkedHashModel();
+        when(client.queryBySubject(eq("default/subject"))).thenReturn(model);
+
+        //act
+        Model result = controller.getModel("subject", null);
+
+        //assert
+        assertEquals("Models should be the same", model, result);
+    }
+
     @Test
     public void testModelBySubject() {
         //arrange
         LinkedHashModel model = new LinkedHashModel();
-        when(client.queryBySubject(eq("subject"))).thenReturn(model);
+        when(client.queryBySubject(eq("myNamespace/subject"))).thenReturn(model);
 
         //act
-        Model result = controller.getModelBySubject("subject");
+        Model result = controller.getModel("subject", "myNamespace/");
 
         //assert
         assertEquals("Models should be the same", model, result);
