@@ -31,7 +31,7 @@ public class TripleStoreClientSaveTest extends TripleStoreIntegrationTest {
         tripleStore.save(pablo);
 
         //assert
-        Model model = getStatementsFromStore(repository);
+        Model model = getStatementsFromStore();
 
         assertEquals("There should be 2 statements", 2, model.size());
 

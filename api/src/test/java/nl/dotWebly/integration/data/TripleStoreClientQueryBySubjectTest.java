@@ -19,7 +19,7 @@ public class TripleStoreClientQueryBySubjectTest extends TripleStoreIntegrationT
     public void testQueryBySubject() {
         //arrange
         Model pablo = createArtist("Picasso").build();
-        addModelToStore(repository, pablo);
+        addModelToStore(pablo);
 
         //act
         Model model = tripleStore.queryBySubject("http://example.org/Picasso");

@@ -55,7 +55,7 @@ public abstract class TripleStoreIntegrationTest {
                 .add(FOAF.LAST_NAME, artistName);
     }
 
-    protected void addModelToStore(TripleStoreRepository repository, Model model) {
+    protected void addModelToStore(Model model) {
         try (RepositoryConnection connection = repository.getConnection()) {
             connection.add(model);
             connection.commit();
@@ -66,7 +66,7 @@ public abstract class TripleStoreIntegrationTest {
     }
 
     // Helper methods
-    protected Model getStatementsFromStore(TripleStoreRepository repository) {
+    protected Model getStatementsFromStore() {
         try (RepositoryConnection connection = repository.getConnection()) {
             Model result = new LinkedHashModel();
             Iterations.addAll(connection.getStatements(null, null, null), result);

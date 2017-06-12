@@ -5,15 +5,18 @@ import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -26,10 +29,13 @@ public class ModelControllerTest {
     @Mock
     TripleStoreClient client;
 
-
-
     @InjectMocks
     private ModelController controller = new ModelController();
+
+    @Before
+    public void init() {
+        ReflectionTestUtils.setField(controller, "defaultNamespace", "default/");
+    }
 
     @Test
     public void testModels() {
@@ -43,7 +49,6 @@ public class ModelControllerTest {
         //assert
         assertEquals("Models should be the same", model, result);
     }
-
 
     @Test
     public void testModelBySubjectDefaultNamespace() {
@@ -71,4 +76,21 @@ public class ModelControllerTest {
         assertEquals("Models should be the same", model, result);
     }
 
+    @Test
+    public void testDeleteBySubjectDefaultNamespace() {
+        //act
+        controller.deleteModel("subject", null);
+
+        //assert
+        verify(client).deleteBySubject("default/subject");
+    }
+
+    @Test
+    public void testDeleteBySubject() {
+        //act
+        controller.deleteModel("subject", "myNamespace/");
+
+        //assert
+        verify(client).deleteBySubject("myNamespace/subject");;
+    }
 }

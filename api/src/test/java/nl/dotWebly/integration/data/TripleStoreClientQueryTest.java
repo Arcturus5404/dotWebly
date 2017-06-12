@@ -23,8 +23,8 @@ public class TripleStoreClientQueryTest extends TripleStoreIntegrationTest {
         Model pablo = createArtist("Picasso").build();
         Model ross = createArtist("Ross").build();
 
-        addModelToStore(repository, pablo);
-        addModelToStore(repository, ross);
+        addModelToStore(pablo);
+        addModelToStore(ross);
 
         //act
         Model model = tripleStore.query();
@@ -49,8 +49,8 @@ public class TripleStoreClientQueryTest extends TripleStoreIntegrationTest {
         Model pablo = createArtist("Picasso").add(FOAF.FIRST_NAME, "Pablo").build();
         Model ross = createArtist("Ross").add(FOAF.FIRST_NAME, "Bob").build();
 
-        addModelToStore(repository, pablo);
-        addModelToStore(repository, ross);
+        addModelToStore(pablo);
+        addModelToStore(ross);
 
         //act
         List<Model> models = tripleStore.queryGroupedBySubject();
