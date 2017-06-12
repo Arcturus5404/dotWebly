@@ -1,21 +1,21 @@
 package nl.dotWebly.data.client.impl;
 
-import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.data.client.TripleStoreClient;
-import org.apache.commons.codec.binary.StringUtils;
+import nl.dotWebly.data.repository.TripleStoreRepository;
 import org.eclipse.rdf4j.common.iteration.Iterations;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
-import org.eclipse.rdf4j.model.impl.SimpleIRI;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**

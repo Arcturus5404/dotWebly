@@ -4,7 +4,6 @@ import nl.dotWebly.data.repository.TripleStoreRepository;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
-import org.springframework.context.annotation.Primary;
 
 import java.io.File;
 import java.util.Optional;

@@ -19,12 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class ModelController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelController.class);
 
-    private TripleStoreClient client;
-
     @Autowired
-    public ModelController(TripleStoreClient client) {
-        this.client = client;
-    }
+    private TripleStoreClient client;
 
     @RequestMapping
     public Model getModels() {

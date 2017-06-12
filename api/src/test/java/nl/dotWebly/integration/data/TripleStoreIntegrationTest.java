@@ -1,8 +1,8 @@
 package nl.dotWebly.integration.data;
 
 import nl.dotWebly.data.client.TripleStoreClient;
-import nl.dotWebly.data.integration.configuration.SailMemoryTestConfiguration;
 import nl.dotWebly.data.repository.TripleStoreRepository;
+import nl.dotWebly.integration.data.configuration.SailMemoryTestConfiguration;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.common.iteration.Iterations;
 import org.eclipse.rdf4j.model.Model;

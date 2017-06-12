@@ -1,6 +1,5 @@
 package nl.dotWebly.integration.data;
 
-import nl.dotWebly.data.integration.TripleStoreIntegrationTest;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
