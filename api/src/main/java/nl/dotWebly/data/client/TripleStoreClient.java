@@ -13,6 +13,8 @@ public interface TripleStoreClient {
 
     Model query();
 
+    Model queryBySubject(String subject);
+
     List<Model> queryGroupedBySubject();
 
 }

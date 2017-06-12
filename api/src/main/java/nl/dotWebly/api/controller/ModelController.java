@@ -28,8 +28,17 @@ public class ModelController {
 
     @RequestMapping
     public Model getModels() {
-        Model model = client.query();
-        return model;
+        return client.query();
+    }
+
+    @RequestMapping("/{subject}")
+    public Model getModelBySubject(@PathVariable(name = "subject") String subject) {
+        return client.queryBySubject(subject);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    public Model addModel(Model model) {
+        return client.query();
     }
 
     @RequestMapping("/insert-testdata")

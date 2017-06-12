@@ -1,4 +1,4 @@
-package nl.dotWebly.data.unit;
+package nl.dotWebly.unit.data;
 
 import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientTest {
+public class TripleStoreClientQueryTest {
 
     @Mock
     TripleStoreRepository repository;
@@ -96,69 +96,6 @@ public class TripleStoreClientTest {
         //assert
         verify(repository).getConnection();
         verify(repository).shutDown();
-    }
-
-    @Test
-    public void testQueryGroupedBySubjectEmptyResult() {
-        //arrange
-        when(repository.getConnection()).thenReturn(connection);
-        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
-
-        //act
-        List<Model> models = client.queryGroupedBySubject();
-
-        //assert
-        assertNotNull("Models size should not be 0", models.size());
-    }
-
-    @Test
-    public void testQueryGroupedBySubjectCallsMethods() {
-        //arrange
-        when(repository.getConnection()).thenReturn(connection);
-        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
-
-        //act
-        client.queryGroupedBySubject();
-
-        //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
-    }
-
-    @Test
-    public void testQueryGroupedBySubjectReturnsData() {
-        //arrange
-        when(repository.getConnection()).thenReturn(connection);
-        Model picasso = createArtist("Picasso").build();
-        Model ross = createArtist("Ross").build();
-
-        List<Statement> statements = Stream.concat(picasso.stream(), ross.stream()).collect(toList());
-        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new CollectionIteration<>(statements)));
-
-        //act
-        client.queryGroupedBySubject();
-
-        //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
-        verify(connection).getStatements(null, null, null);
-    }
-
-    @Test
-    public void testSaveCallsMethods() {
-        //arrange
-        when(repository.getConnection()).thenReturn(connection);
-        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
-
-        Model picasso = createArtist("Picasso").build();
-
-        //act
-        client.save(picasso);
-
-        //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
-        verify(connection).add(picasso);
     }
 
     private ModelBuilder createArtist(String artistName) {

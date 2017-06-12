@@ -2,11 +2,11 @@ package nl.dotWebly.data.client.impl;
 
 import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.data.client.TripleStoreClient;
+import org.apache.commons.codec.binary.StringUtils;
 import org.eclipse.rdf4j.common.iteration.Iterations;
-import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
+import org.eclipse.rdf4j.model.impl.SimpleIRI;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.slf4j.Logger;
@@ -40,12 +40,20 @@ public class TripleStoreClientImpl implements TripleStoreClient {
         return model;
     }
 
+    @Override
+    public Model queryBySubject(String subject) {
+        assert subject != null;
+
+        Model model = new LinkedHashModel();
+        getStatementsBySubject(subject, result -> Iterations.addAll(result, model));
+        return model;
+    }
+
     /**
      * Query will query the triple store and return models grouped by subject.
      * @return
      */
     public List<Model> queryGroupedBySubject() {
-
         Map<Resource, Model> modelMap = new HashMap<>();
         getStatements(result -> {
             while (result.hasNext()) {
@@ -63,8 +71,19 @@ public class TripleStoreClientImpl implements TripleStoreClient {
     }
 
     private void getStatements(Consumer<RepositoryResult<Statement>> consumer) {
+        getStatements(null, null, null, consumer);
+    }
+
+    private void getStatementsBySubject(String subject, Consumer<RepositoryResult<Statement>> consumer) {
+        getStatements(subject, null, null, consumer);
+    }
+
+    private void getStatements(String subject, IRI predicate, Value object, Consumer<RepositoryResult<Statement>> consumer) {
         doQuery(connection -> {
-                    try (RepositoryResult<Statement> result = connection.getStatements(null, null, null);) {
+                    ValueFactory factory = connection.getValueFactory();
+                    Resource resourceSubject = subject != null ? factory.createIRI(subject) : null;
+
+                    try (RepositoryResult<Statement> result = connection.getStatements(resourceSubject, predicate, object);) {
                         consumer.accept(result);
                     }
                 }
