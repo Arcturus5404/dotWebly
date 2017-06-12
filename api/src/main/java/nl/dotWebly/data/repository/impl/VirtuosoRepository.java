@@ -1,15 +1,15 @@
 package nl.dotWebly.data.repository.impl;
 
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import nl.dotWebly.data.repository.TripleStoreRepository;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by Rick Fleuren on 6/9/2017.
  */
 
-@Service
+@Repository
 @Primary
 public class VirtuosoRepository implements TripleStoreRepository {
 
