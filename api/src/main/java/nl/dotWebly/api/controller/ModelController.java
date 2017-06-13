@@ -30,7 +30,7 @@ public class ModelController {
     @Autowired
     private TripleStoreClient client;
 
-    @RequestMapping
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Model> getModels() {
         return ResponseEntity.ok(client.query());
     }
@@ -48,7 +48,7 @@ public class ModelController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
     public ResponseEntity<Model> addModel(@RequestBody Model model) {
         Model result = client.add(model);
         return ResponseEntity.ok(result);
@@ -58,32 +58,6 @@ public class ModelController {
     public ResponseEntity<Model> updateModel(@RequestBody Model model) {
         Model result = client.update(model);
         return ResponseEntity.ok(result);
-    }
-
-    @RequestMapping("/insert-testdata")
-    public String insertTest() {
-
-        ModelBuilder builder = new ModelBuilder();
-
-        Model pablo = builder
-                .setNamespace("ex", "http://example.org/")
-                .subject("ex:" + "Picasso")
-                .add(RDF.TYPE, "ex:Artist")
-                .add(FOAF.LAST_NAME, "Picasso")
-                .add(FOAF.FIRST_NAME, "Pablo").build();
-
-        client.add(pablo);
-
-        Model bob = builder
-                .setNamespace("ex", "http://example.org/")
-                .subject("ex:" + "Ross")
-                .add(RDF.TYPE, "ex:Artist")
-                .add(FOAF.LAST_NAME, "Ross")
-                .add(FOAF.FIRST_NAME, "Bob").build();
-
-        client.add(bob);
-
-        return "done!";
     }
 
     private String getNamespace(String namespace) {

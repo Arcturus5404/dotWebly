@@ -108,6 +108,14 @@ public class TripleStoreClientImpl implements TripleStoreClient {
         });
     }
 
+    @Override
+    public void clearAllTriples() {
+        doQuery(connection -> {
+            connection.clear();
+            connection.clearNamespaces();
+        });
+    }
+
     private void getStatements(Consumer<RepositoryResult<Statement>> consumer) {
         getStatements(null, null, null, consumer);
     }

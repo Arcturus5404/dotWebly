@@ -47,9 +47,13 @@ public interface TripleStoreClient {
     Model update(Model model);
 
     /**
+     * Deletes all triples from the datasource
+     */
+    void clearAllTriples();
+
+    /**
      * Delete a model with all statements as subject from the datasource
      * @param subject
-     * @return
      */
     void deleteBySubject(String subject);
 }

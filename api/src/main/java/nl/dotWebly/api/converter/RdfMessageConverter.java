@@ -10,8 +10,10 @@ import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -46,7 +48,7 @@ public class RdfMessageConverter extends AbstractHttpMessageConverter<Model> {
     @Override
     protected Model readInternal(Class<? extends Model> aClass, HttpInputMessage httpInputMessage) throws IOException, HttpMessageNotReadableException {
         List<String> namespaces = httpInputMessage.getHeaders().get("namespace");
-        String baseUri = namespaces.size() == 0 ? null : namespaces.get(0);
+        String baseUri = namespaces == null ? "" : namespaces.get(0);
         return Rio.parse(httpInputMessage.getBody(), baseUri, format);
     }
 
