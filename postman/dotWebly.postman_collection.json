@@ -248,6 +248,59 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "POST Dali TTL",
+			"request": {
+				"url": "http://localhost:8080/api/v1/models.ttl",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/turtle",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<http://example.es/Dali> a <http://example.org/Artist> ;\r\n\t<http://xmlns.com/foaf/0.1/firstName> \"Salvador\" ;\r\n\t<http://xmlns.com/foaf/0.1/knows> <http://example.org/Picasso> ;\r\n\t<http://xmlns.com/foaf/0.1/lastName> \"Dali\" ."
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Dali with namespace",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8080/api/v1/models/Dali?namespace=http://example.es/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"models",
+						"Dali"
+					],
+					"query": [
+						{
+							"key": "namespace",
+							"value": "http://example.es/",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
