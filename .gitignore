@@ -1,0 +1,5 @@
+/.idea/libraries
+/.idea
+/api/target/test-classes/nl/dotWebly/data/unit/*.class
+*.class
+classes

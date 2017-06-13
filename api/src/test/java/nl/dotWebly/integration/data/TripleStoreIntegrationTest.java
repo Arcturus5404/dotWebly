@@ -46,13 +46,21 @@ public abstract class TripleStoreIntegrationTest {
 
     // Helper methods
     protected ModelBuilder createArtist(String artistName) {
+        return create(artistName, artistName, "Artist");
+    }
+
+    protected ModelBuilder createArtist(String subject, String artistName) {
+        return create(subject, artistName, "Artist");
+    }
+
+    protected ModelBuilder create(String subject, String name, String type) {
         ModelBuilder builder = new ModelBuilder();
 
         return builder
                 .setNamespace("ex", "http://example.org/")
-                .subject("ex:" + artistName)
-                .add(RDF.TYPE, "ex:Artist")
-                .add(FOAF.LAST_NAME, artistName);
+                .subject("ex:" + subject)
+                .add(RDF.TYPE, "ex:" + type)
+                .add(FOAF.LAST_NAME, name);
     }
 
     protected void addModelToStore(Model model) {

@@ -30,8 +30,40 @@ public class TripleStoreClientImpl implements TripleStoreClient {
     @Autowired
     TripleStoreRepository tripleStoreRepository;
 
-    public void save(Model model) {
-        doQuery(c -> c.add(model));
+    public Model add(Model model) {
+        LinkedHashModel result = new LinkedHashModel();
+
+        doQuery(c -> {
+            c.add(model);
+
+            //Get all the statements which belong to the subject:
+            getModelBySubject(model, result, c);
+        });
+
+        return result;
+    }
+
+    public Model update(Model model) {
+        LinkedHashModel result = new LinkedHashModel();
+
+        doQuery(c -> {
+
+            //Check if the statement exist with subject / predicate
+            model.forEach(s -> {
+                    if(c.hasStatement(s.getSubject(), s.getPredicate(), null, true)) {
+                        c.remove(s.getSubject(), s.getPredicate(), null);
+                    }
+                }
+            );
+
+            //add the new model to the triple store
+            c.add(model);
+
+            //Get all the statements which belong to the subject:
+            getModelBySubject(model, result, c);
+        });
+
+        return result;
     }
 
     @Override
@@ -103,6 +135,12 @@ public class TripleStoreClientImpl implements TripleStoreClient {
             // before our program exits, make sure the database is properly shut down.
             tripleStoreRepository.shutDown();
         }
+    }
+
+    private void getModelBySubject(Model model, LinkedHashModel result, RepositoryConnection c) {
+        model.subjects().stream()
+                .map(s -> c.getStatements(s, null, null))
+                .forEach(s -> Iterations.addAll(s, result));
     }
 
 }

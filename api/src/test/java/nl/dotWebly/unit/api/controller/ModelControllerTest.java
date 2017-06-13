@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.Assert.assertEquals;
@@ -44,10 +46,11 @@ public class ModelControllerTest {
         when(client.query()).thenReturn(model);
 
         //act
-        Model result = controller.getModels();
+        ResponseEntity<Model> result = controller.getModels();
 
         //assert
-        assertEquals("Models should be the same", model, result);
+        assertEquals("Models should be the same", model, result.getBody());
+        assertEquals("Status code should be 200", HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
@@ -57,10 +60,11 @@ public class ModelControllerTest {
         when(client.queryBySubject(eq("default/subject"))).thenReturn(model);
 
         //act
-        Model result = controller.getModel("subject", null);
+        ResponseEntity<Model> result = controller.getModel("subject", null);
 
         //assert
-        assertEquals("Models should be the same", model, result);
+        assertEquals("Models should be the same", model, result.getBody());
+        assertEquals("Status code should be 200", HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
@@ -70,10 +74,11 @@ public class ModelControllerTest {
         when(client.queryBySubject(eq("myNamespace/subject"))).thenReturn(model);
 
         //act
-        Model result = controller.getModel("subject", "myNamespace/");
+        ResponseEntity<Model> result = controller.getModel("subject", "myNamespace/");
 
         //assert
-        assertEquals("Models should be the same", model, result);
+        assertEquals("Models should be the same", model, result.getBody());
+        assertEquals("Status code should be 200", HttpStatus.OK, result.getStatusCode());
     }
 
     @Test

@@ -23,6 +23,13 @@ public class RdfMessageConverter extends AbstractHttpMessageConverter<Model> {
 
     private RDFFormat format;
 
+    /**
+     * The converter for content negotiation. All {@link Model} objects will be converted with the Rio parser
+     *
+     * Make sure you define a namespace on your headers for formats with relative paths, like JSON-ID
+     *
+     * @param format The format to be supported by the converter
+     */
     public RdfMessageConverter(RDFFormat format) {
         super(format.getMIMETypes().stream()
                 .filter(m -> !"application/xml".equals(m))
@@ -38,7 +45,9 @@ public class RdfMessageConverter extends AbstractHttpMessageConverter<Model> {
 
     @Override
     protected Model readInternal(Class<? extends Model> aClass, HttpInputMessage httpInputMessage) throws IOException, HttpMessageNotReadableException {
-        throw new HttpMessageNotReadableException("Read not supported");
+        List<String> namespaces = httpInputMessage.getHeaders().get("namespace");
+        String baseUri = namespaces.size() == 0 ? null : namespaces.get(0);
+        return Rio.parse(httpInputMessage.getBody(), baseUri, format);
     }
 
     @Override

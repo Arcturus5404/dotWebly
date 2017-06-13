@@ -10,7 +10,6 @@ import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
-import org.eclipse.rdf4j.query.algebra.evaluation.iterator.CollectionIteration;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.junit.Test;
@@ -20,11 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,7 +28,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientSaveTest {
+public class TripleStoreClientUpdateTest {
 
     @Mock
     TripleStoreRepository repository;
@@ -46,7 +40,7 @@ public class TripleStoreClientSaveTest {
     private TripleStoreClient client = new TripleStoreClientImpl();
 
     @Test
-    public void testSaveCallsMethods() {
+    public void testUpdateCallsMethods() {
         //arrange
         when(repository.getConnection()).thenReturn(connection);
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
@@ -54,7 +48,24 @@ public class TripleStoreClientSaveTest {
         Model picasso = createArtist("Picasso").build();
 
         //act
-        client.save(picasso);
+        client.update(picasso);
+
+        //assert
+        verify(repository).getConnection();
+        verify(repository).shutDown();
+        verify(connection).add(picasso);
+    }
+
+    @Test
+    public void testUpdateWithExistingData() {
+        //arrange
+        when(repository.getConnection()).thenReturn(connection);
+        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
+
+        Model picasso = createArtist("Picasso").build();
+
+        //act
+        client.update(picasso);
 
         //assert
         verify(repository).getConnection();

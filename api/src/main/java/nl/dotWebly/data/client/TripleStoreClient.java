@@ -31,10 +31,20 @@ public interface TripleStoreClient {
     List<Model> queryGroupedBySubject();
 
     /**
-     * Save the model with all statements to the datasource
+     * Adds the model with all statements to the datasource; all existing triples will be left alone
      * @param model
      */
-    void save(Model model);
+    Model add(Model model);
+
+
+    /**
+     * Updates/adds the model with all statements to the datasource;
+     * All existing triples will be update when the subject and predicate match.
+     *
+     * The old objects will be removed
+     * @param model
+     */
+    Model update(Model model);
 
     /**
      * Delete a model with all statements as subject from the datasource

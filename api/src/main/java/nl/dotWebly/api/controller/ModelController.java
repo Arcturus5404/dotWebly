@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -29,20 +31,33 @@ public class ModelController {
     private TripleStoreClient client;
 
     @RequestMapping
-    public Model getModels() {
-        return client.query();
+    public ResponseEntity<Model> getModels() {
+        return ResponseEntity.ok(client.query());
     }
 
-    @RequestMapping("/{subject}")
-    public Model getModel(@PathVariable("subject") String subject, @RequestParam(value = "namespace", required = false) String namespace) {
-        String resultingNamespace = getNamespace(namespace);
-        return client.queryBySubject(resultingNamespace + subject);
+    @RequestMapping(path = "/{subject}")
+    public ResponseEntity<Model> getModel(@PathVariable("subject") String subject, @RequestParam(value = "namespace", required = false) String namespace) {
+        String result = getNamespace(namespace);
+        return ResponseEntity.ok(client.queryBySubject(result + subject));
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public void deleteModel(@PathVariable("subject") String subject, @RequestParam(value = "namespace", required = false) String namespace) {
-        String resultingNamespace = getNamespace(namespace);
-        client.deleteBySubject(resultingNamespace + subject);
+    @RequestMapping(path = "/{subject}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteModel(@PathVariable("subject") String subject, @RequestParam(value = "namespace", required = false) String namespace) {
+        String result = getNamespace(namespace);
+        client.deleteBySubject(result + subject);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Model> addModel(@RequestBody Model model) {
+        Model result = client.add(model);
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH)
+    public ResponseEntity<Model> updateModel(@RequestBody Model model) {
+        Model result = client.update(model);
+        return ResponseEntity.ok(result);
     }
 
     @RequestMapping("/insert-testdata")
@@ -50,14 +65,23 @@ public class ModelController {
 
         ModelBuilder builder = new ModelBuilder();
 
-        Model model = builder
-            .setNamespace("ex", "http://example.org/")
-            .subject("ex:" + "Picasso")
-            .add(RDF.TYPE, "ex:Artist")
-            .add(FOAF.LAST_NAME, "Picasso")
-            .add(FOAF.FIRST_NAME, "Pablo").build();
+        Model pablo = builder
+                .setNamespace("ex", "http://example.org/")
+                .subject("ex:" + "Picasso")
+                .add(RDF.TYPE, "ex:Artist")
+                .add(FOAF.LAST_NAME, "Picasso")
+                .add(FOAF.FIRST_NAME, "Pablo").build();
 
-        client.save(model);
+        client.add(pablo);
+
+        Model bob = builder
+                .setNamespace("ex", "http://example.org/")
+                .subject("ex:" + "Ross")
+                .add(RDF.TYPE, "ex:Artist")
+                .add(FOAF.LAST_NAME, "Ross")
+                .add(FOAF.FIRST_NAME, "Bob").build();
+
+        client.add(bob);
 
         return "done!";
     }
