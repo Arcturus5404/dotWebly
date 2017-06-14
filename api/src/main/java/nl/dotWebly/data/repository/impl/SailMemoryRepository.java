@@ -4,6 +4,8 @@ import nl.dotWebly.data.repository.TripleStoreRepository;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 
 import java.io.File;
@@ -14,21 +16,24 @@ import java.util.Optional;
  */
 
 @org.springframework.stereotype.Repository
-//@Primary
+@Primary
 public class SailMemoryRepository implements TripleStoreRepository {
     private Repository repository;
 
     public SailMemoryRepository() {
-        this(false, Optional.empty());
+        this(Optional.of(Boolean.FALSE), Optional.empty());
     }
 
-    public SailMemoryRepository(boolean clearData, Optional<String> filePath) {
-        MemoryStore memoryStore = filePath.isPresent() ? new MemoryStore(new File(filePath.get())) : new MemoryStore();
+    @Autowired
+    public SailMemoryRepository(@Value("${init.clearData}") Optional<Boolean> clearData, @Value("${init.filepath}") Optional<String> filePath) {
+        MemoryStore memoryStore = filePath.isPresent() && !"".equals(filePath.get())
+                ? new MemoryStore(new File(filePath.get()))
+                : new MemoryStore();
+
         memoryStore.setPersist(true);
 
         repository = new org.eclipse.rdf4j.repository.sail.SailRepository(memoryStore);
-
-        if(clearData) {
+        if(clearData.orElse(Boolean.FALSE)) {
             clearAllData();
         }
     }

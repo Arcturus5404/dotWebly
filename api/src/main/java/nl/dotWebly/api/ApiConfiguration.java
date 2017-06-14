@@ -24,7 +24,7 @@ import java.util.*;
 
 @Configuration
 @EnableWebMvc
-@PropertySource({"settings.properties", "virtuoso.properties"})
+@PropertySource({"settings.properties", "repository.sail.properties", "repository.virtuoso.properties"})
 public class ApiConfiguration extends WebMvcConfigurerAdapter {
 
     private static HashMap<String, RdfMessageConverter> converters;

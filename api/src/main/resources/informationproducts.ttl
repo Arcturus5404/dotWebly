@@ -1,0 +1,24 @@
+@prefix elmo: <http://bp4mc2.org/elmo/def#>.
+@prefix stage: <http://localhost:8080/myStage#>.
+
+stage:WeergaveTripleQuery a elmo:InformationProduct;
+	elmo:query '''
+		prefix container: <http://localhost:8080/toepasbareregels/container/>
+		prefix dmn: <http://www.omg.org/spec/DMN/20151101/dmn#>
+
+		CONSTRUCT {
+			<@SUBJECT@> ?p ?o.
+		}
+		WHERE {
+			{
+				<@SUBJECT@> ?p ?o.
+				OPTIONAL {
+					<@SUBJECT@> rdfs:label ?subject_label.
+				}
+				OPTIONAL {
+					?o rdfs:label ?o_label.
+				}
+			}
+		}
+	'''
+.

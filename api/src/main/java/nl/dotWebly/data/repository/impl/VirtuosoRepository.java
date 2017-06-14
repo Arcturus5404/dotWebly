@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-@Primary
+//@Primary
 public class VirtuosoRepository implements TripleStoreRepository {
 
     private final virtuoso.rdf4j.driver.VirtuosoRepository repository;
