@@ -14,7 +14,7 @@ import java.util.Optional;
  */
 
 @org.springframework.stereotype.Repository
-@Primary
+//@Primary
 public class SailMemoryRepository implements TripleStoreRepository {
     private Repository repository;
 

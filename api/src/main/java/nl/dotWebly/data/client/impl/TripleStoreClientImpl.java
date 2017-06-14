@@ -137,6 +137,7 @@ public class TripleStoreClientImpl implements TripleStoreClient {
     }
     private void doQuery(Consumer<RepositoryConnection> connectionConsumer) {
         try (RepositoryConnection connection = tripleStoreRepository.getConnection()) {
+
             connectionConsumer.accept(connection);
         }
         finally {
