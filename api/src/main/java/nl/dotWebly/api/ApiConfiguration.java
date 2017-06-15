@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -24,7 +25,12 @@ import java.util.*;
 
 @Configuration
 @EnableWebMvc
-@PropertySource({"settings.properties", "repository.sail.properties", "repository.virtuoso.properties"})
+@PropertySource({
+        "settings.properties",
+        "repository.sail.properties",
+        "repository.file.properties",
+        "repository.sparql.properties",
+        "repository.virtuoso.properties"})
 public class ApiConfiguration extends WebMvcConfigurerAdapter {
 
     private static HashMap<String, RdfMessageConverter> converters;
@@ -57,7 +63,7 @@ public class ApiConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new StringHttpMessageConverter());
-        converters.addAll(this.converters.values());
+        converters.addAll(ApiConfiguration.converters.values());
     }
 
     @Bean

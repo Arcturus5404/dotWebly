@@ -34,25 +34,16 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientQueryGroupBySubjectTest {
-
-    @Mock
-    TripleStoreRepository repository;
-
-    @Mock
-    RepositoryConnection connection;
-
-    @InjectMocks
-    private TripleStoreClient client = new TripleStoreClientImpl();
+public class TripleStoreClientQueryGroupBySubjectTest extends TripleStoreClientTest {
 
       @Test
     public void testQueryGroupedBySubjectEmptyResult() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
         //act
         List<Model> models = client.queryGroupedBySubject();
+        initConnectionConsumer();
 
         //assert
         assertNotNull("Models size should not be 0", models.size());
@@ -61,33 +52,30 @@ public class TripleStoreClientQueryGroupBySubjectTest {
     @Test
     public void testQueryGroupedBySubjectCallsMethods() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
         //act
         client.queryGroupedBySubject();
+        initConnectionConsumer();
 
         //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
+        verify(connection).getStatements(null, null, null);
     }
 
     @Test
     public void testQueryGroupedBySubjectReturnsData() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         Model picasso = createArtist("Picasso").build();
         Model ross = createArtist("Ross").build();
 
         List<Statement> statements = Stream.concat(picasso.stream(), ross.stream()).collect(toList());
-        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new CollectionIteration<>(statements)));
+        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<>(new CollectionIteration<>(statements)));
 
         //act
         client.queryGroupedBySubject();
+        initConnectionConsumer();
 
         //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
         verify(connection).getStatements(null, null, null);
     }
 

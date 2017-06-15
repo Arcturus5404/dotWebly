@@ -1,15 +1,12 @@
 package nl.dotWebly.data.repository.impl;
 
-import nl.dotWebly.data.repository.TripleStoreRepository;
 import org.eclipse.rdf4j.repository.Repository;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 
 import java.io.File;
-import java.util.Optional;
 
 /**
  * Created by Rick Fleuren on 6/9/2017.
@@ -17,45 +14,37 @@ import java.util.Optional;
 
 @org.springframework.stereotype.Repository
 @Primary
-public class SailMemoryRepository implements TripleStoreRepository {
+public class SailMemoryRepository extends Rdf4JRepository {
     private Repository repository;
 
     public SailMemoryRepository() {
-        this(Optional.of(Boolean.FALSE), Optional.empty());
+        this(false, null);
     }
 
     @Autowired
-    public SailMemoryRepository(@Value("${init.clearData}") Optional<Boolean> clearData, @Value("${init.filepath}") Optional<String> filePath) {
-        MemoryStore memoryStore = filePath.isPresent() && !"".equals(filePath.get())
-                ? new MemoryStore(new File(filePath.get()))
+    public SailMemoryRepository(@Value("${sail.init.clearData}") boolean clearData, @Value("${sail.init.filepath}") String filePath) {
+        MemoryStore memoryStore = filePath != null && !"".equals(filePath)
+                ? new MemoryStore(new File(filePath))
                 : new MemoryStore();
 
         memoryStore.setPersist(true);
 
         repository = new org.eclipse.rdf4j.repository.sail.SailRepository(memoryStore);
-        repository.initialize();
 
-        if(clearData.orElse(Boolean.FALSE)) {
+        if(clearData) {
             clearAllData();
         }
     }
 
     private void clearAllData() {
-        try(RepositoryConnection connection = getConnection()) {
-            connection.clear();
-            connection.clearNamespaces();
-        }
-        finally {
-            repository.shutDown();
-        }
+        performQuery(connection -> {
+                    connection.clear();
+                    connection.clearNamespaces();
+                });
     }
 
     @Override
-    public RepositoryConnection getConnection() {
-        return repository.getConnection();
-    }
-    @Override
-    public void shutDown() {
-        repository.shutDown();
+    public Repository getRepository() {
+        return repository;
     }
 }

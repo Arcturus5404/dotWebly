@@ -1,4 +1,4 @@
-package nl.dotWebly.integration.data;
+package nl.dotWebly.integration.data.client;
 
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;

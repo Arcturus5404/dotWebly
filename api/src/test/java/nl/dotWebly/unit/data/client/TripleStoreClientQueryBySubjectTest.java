@@ -38,16 +38,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientQueryBySubjectTest {
-
-    @Mock
-    TripleStoreRepository repository;
-
-    @Mock
-    RepositoryConnection connection;
-
-    @Mock
-    ValueFactory valueFactory;
+public class TripleStoreClientQueryBySubjectTest extends TripleStoreClientTest {
 
     @Mock
     IRI subjectIri;
@@ -58,25 +49,25 @@ public class TripleStoreClientQueryBySubjectTest {
     @Test(expected = AssertionError.class)
     public void testQueryByInvalidSubject() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         when(connection.getValueFactory()).thenReturn(valueFactory);
         when(valueFactory.createIRI(anyString())).thenReturn(subjectIri);
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
         //act & assert
         client.queryBySubject(null);
+        initConnectionConsumer();
     }
 
     @Test
     public void testQueryBySubjectEmptyResult() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         when(connection.getValueFactory()).thenReturn(valueFactory);
         when(valueFactory.createIRI(eq("subject"))).thenReturn(subjectIri);
         when(connection.getStatements(eq(subjectIri), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
         //act
         Model model = client.queryBySubject("subject");
+        initConnectionConsumer();
 
         //assert
         assertNotNull("Model should not be null", model);
@@ -86,7 +77,6 @@ public class TripleStoreClientQueryBySubjectTest {
     @Test
     public void testQueryBySubjectReturnsData() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         when(connection.getValueFactory()).thenReturn(valueFactory);
         when(valueFactory.createIRI(eq("subject"))).thenReturn(subjectIri);
 
@@ -94,14 +84,13 @@ public class TripleStoreClientQueryBySubjectTest {
         Model ross = createArtist("Ross").build();
 
         List<Statement> statements = Stream.concat(picasso.stream(), ross.stream()).collect(toList());
-        when(connection.getStatements(eq(subjectIri), any(), any())).thenReturn(new RepositoryResult<Statement>(new CollectionIteration<>(statements)));
+        when(connection.getStatements(eq(subjectIri), any(), any())).thenReturn(new RepositoryResult<>(new CollectionIteration<>(statements)));
 
         //act
         client.queryBySubject("subject");
+        initConnectionConsumer();
 
         //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
         verify(connection).getStatements(subjectIri, null, null);
     }
 

@@ -2,7 +2,12 @@
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Spring" name="Spring">
-      <configuration />
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/java/nl/dotWebly/api/ApiConfiguration.java</file>
+          <file>file://$MODULE_DIR$/src/main/java/nl/dotWebly/api/Application.java</file>
+        </fileset>
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
@@ -12,6 +17,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
@@ -69,18 +75,21 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.8.7" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-rio-rdfxml:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-rio-rdfjson:2.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-repository-sail:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-repository-http:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-repository-api:2.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-sail-api:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-http-client:2.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-http-protocol:2.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-rio-ntriples:2.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-queryresultio-api:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.3" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-queryparser-api:2.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-queryalgebra-model:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-http-protocol:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-rio-ntriples:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-query:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-queryparser-api:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-queryresultio-api:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.24" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.eclipse.rdf4j:rdf4j-rio-binary:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-repository-sail:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-sail-api:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-queryalgebra-model:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-rio-trig:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-queryalgebra-evaluation:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-repository-sparql:2.2.1" level="project" />
@@ -92,7 +101,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-sail-inferencer:2.2.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.eclipse.rdf4j:rdf4j-queryparser-serql:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.rdf4j:rdf4j-sail-model:2.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.24" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: com.virtuoso:virtjdbc4:1.0">
         <CLASSES>

@@ -43,25 +43,16 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientQueryTest {
-
-    @Mock
-    TripleStoreRepository repository;
-
-    @Mock
-    RepositoryConnection connection;
-
-    @InjectMocks
-    private TripleStoreClient client = new TripleStoreClientImpl();
+public class TripleStoreClientQueryTest extends TripleStoreClientTest {
 
     @Test
     public void testQueryEmptyResult() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
         //act
         Model model = client.query();
+        initConnectionConsumer();
 
         //assert
         assertNotNull("Model should not be null", model);
@@ -71,13 +62,12 @@ public class TripleStoreClientQueryTest {
     @Test
     public void testQueryReturnsData() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
-
         Model picasso = createArtist("Picasso").build();
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new CollectionIteration(picasso)));
 
         //act
         Model model = client.query();
+        initConnectionConsumer();
 
         //assert
         assertNotNull("Model should not be null", model);
@@ -87,15 +77,14 @@ public class TripleStoreClientQueryTest {
     @Test
     public void testQueryCallsMethods() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
         //act
         client.query();
+        initConnectionConsumer();
 
         //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
+        verify(connection).getStatements(null, null, null);
     }
 
     private ModelBuilder createArtist(String artistName) {

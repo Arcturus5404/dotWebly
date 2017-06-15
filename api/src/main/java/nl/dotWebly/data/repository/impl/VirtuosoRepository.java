@@ -13,26 +13,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 //@Primary
-public class VirtuosoRepository implements TripleStoreRepository {
+public class VirtuosoRepository extends Rdf4JRepository {
 
     private final virtuoso.rdf4j.driver.VirtuosoRepository repository;
 
     @Autowired
-    public VirtuosoRepository(@Value("${connection.url}") String url,
-                              @Value("${connection.user}") String user,
-                              @Value("${connection.password}") String password,
-                              @Value("${default.graph}") String graph) {
+    public VirtuosoRepository(@Value("${virtuoso.connection.url}") String url,
+                              @Value("${virtuoso.connection.user}") String user,
+                              @Value("${virtuoso.connection.password}") String password,
+                              @Value("${virtuoso.default.graph}") String graph) {
         repository = new virtuoso.rdf4j.driver.VirtuosoRepository(url,user,password,graph);
         repository.initialize();
     }
 
     @Override
-    public RepositoryConnection getConnection() {
-        return repository.getConnection();
-    }
-
-    @Override
-    public void shutDown() {
-        repository.shutDown();
+    public org.eclipse.rdf4j.repository.Repository getRepository() {
+        return repository;
     }
 }

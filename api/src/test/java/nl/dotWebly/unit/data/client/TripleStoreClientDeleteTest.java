@@ -31,16 +31,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientDeleteTest {
-
-    @Mock
-    TripleStoreRepository repository;
-
-    @Mock
-    RepositoryConnection connection;
-
-    @Mock
-    ValueFactory valueFactory;
+public class TripleStoreClientDeleteTest extends TripleStoreClientTest {
 
     @Mock
     IRI subjectIri;
@@ -51,16 +42,14 @@ public class TripleStoreClientDeleteTest {
     @Test
     public void testDeleteCallsMethods() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         when(connection.getValueFactory()).thenReturn(valueFactory);
         when(valueFactory.createIRI(eq("subject"))).thenReturn(subjectIri);
 
         //act
         client.deleteBySubject("subject");
+        initConnectionConsumer();
 
         //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
         verify(connection).remove(subjectIri, null, null);
     }
 }

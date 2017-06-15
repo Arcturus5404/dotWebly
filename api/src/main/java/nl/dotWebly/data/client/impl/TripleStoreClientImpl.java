@@ -28,12 +28,12 @@ public class TripleStoreClientImpl implements TripleStoreClient {
     private static final Logger LOG = LoggerFactory.getLogger(TripleStoreClientImpl.class);
 
     @Autowired
-    TripleStoreRepository tripleStoreRepository;
+    TripleStoreRepository repository;
 
     public Model add(Model model) {
         LinkedHashModel result = new LinkedHashModel();
 
-        doQuery(c -> {
+        repository.performQuery(c -> {
             c.add(model);
 
             //Get all the statements which belong to the subject:
@@ -46,7 +46,7 @@ public class TripleStoreClientImpl implements TripleStoreClient {
     public Model update(Model model) {
         LinkedHashModel result = new LinkedHashModel();
 
-        doQuery(c -> {
+        repository.performQuery(c -> {
 
             //Check if the statement exist with subject / predicate
             model.forEach(s -> {
@@ -102,7 +102,7 @@ public class TripleStoreClientImpl implements TripleStoreClient {
 
     @Override
     public void deleteBySubject(String subject) {
-        doQuery(connection -> {
+        repository.performQuery(connection -> {
             IRI subjectIri = connection.getValueFactory().createIRI(subject);
             connection.remove(subjectIri, null, null);
         });
@@ -110,7 +110,7 @@ public class TripleStoreClientImpl implements TripleStoreClient {
 
     @Override
     public void clearAllTriples() {
-        doQuery(connection -> {
+        repository.performQuery(connection -> {
             connection.clear();
             connection.clearNamespaces();
         });
@@ -125,25 +125,15 @@ public class TripleStoreClientImpl implements TripleStoreClient {
     }
 
     private void getStatements(String subject, IRI predicate, Value object, Consumer<RepositoryResult<Statement>> consumer) {
-        doQuery(connection -> {
+        repository.performQuery(connection -> {
                     ValueFactory factory = connection.getValueFactory();
                     Resource resourceSubject = subject != null ? factory.createIRI(subject) : null;
 
-                    try (RepositoryResult<Statement> result = connection.getStatements(resourceSubject, predicate, object);) {
+                    try (RepositoryResult<Statement> result = connection.getStatements(resourceSubject, predicate, object)) {
                         consumer.accept(result);
                     }
                 }
         );
-    }
-    private void doQuery(Consumer<RepositoryConnection> connectionConsumer) {
-        try (RepositoryConnection connection = tripleStoreRepository.getConnection()) {
-
-            connectionConsumer.accept(connection);
-        }
-        finally {
-            // before our program exits, make sure the database is properly shut down.
-            tripleStoreRepository.shutDown();
-        }
     }
 
     private void getModelBySubject(Model model, LinkedHashModel result, RepositoryConnection c) {

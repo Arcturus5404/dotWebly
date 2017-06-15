@@ -1,6 +1,7 @@
-package nl.dotWebly.integration.data;
+package nl.dotWebly.integration.data.client;
 
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
@@ -37,7 +38,7 @@ public class TripleStoreClientQueryTest extends TripleStoreIntegrationTest {
 
         assertEquals("There should be two last names", 2, filterOnNames.size());
 
-        List<String> names = filterOnNames.objects().stream().map(v -> v.stringValue()).collect(toList());
+        List<String> names = filterOnNames.objects().stream().map(Value::stringValue).collect(toList());
 
         assertTrue("Names should contain Ross", names.contains("Ross"));
         assertTrue("Names should contain Picasso", names.contains("Picasso"));
@@ -56,16 +57,14 @@ public class TripleStoreClientQueryTest extends TripleStoreIntegrationTest {
         List<Model> models = tripleStore.queryGroupedBySubject();
 
         //assert
-        models.forEach(model -> {
-            Rio.write(model, System.out, RDFFormat.TURTLE);
-        });
+        models.forEach(model -> Rio.write(model, System.out, RDFFormat.TURTLE));
 
         assertEquals("Size should be two after saving ", 2, models.size());
 
         List<String> names = models.stream()
                 .map(m -> m.filter(null, FOAF.LAST_NAME, null))
                 .flatMap(m -> m.objects().stream())
-                .map(m -> m.stringValue()).collect(toList());
+                .map(Value::stringValue).collect(toList());
 
         assertTrue("Names should be Ross", names.contains("Ross"));
         assertTrue("Names should be Picasso", names.contains("Picasso"));

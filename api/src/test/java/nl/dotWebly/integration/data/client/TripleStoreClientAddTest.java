@@ -1,7 +1,6 @@
-package nl.dotWebly.integration.data;
+package nl.dotWebly.integration.data.client;
 
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.impl.SimpleLiteral;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.junit.Test;
@@ -15,15 +14,14 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Rick Fleuren on 6/9/2017.
  */
-public class TripleStoreClientUpdateTest extends TripleStoreIntegrationTest {
-
+public class TripleStoreClientAddTest extends TripleStoreIntegrationTest {
     @Test
-    public void testSingleUpdate() {
+    public void testSingleAdd() {
         //arrange
         Model pablo = createArtist("Picasso").build();
 
         //act
-        tripleStore.update(pablo);
+        tripleStore.add(pablo);
 
         //assert
         Model model = getStatementsFromStore();
@@ -39,42 +37,37 @@ public class TripleStoreClientUpdateTest extends TripleStoreIntegrationTest {
         List<String> types = model.filter(null, RDF.TYPE, null).
                 stream().map(m -> m.getObject().stringValue()).collect(toList());
 
+
         assertEquals("There should be a type", 1, types.size());
         assertEquals("It should be an Artist", "http://example.org/Artist", types.get(0));
     }
 
     @Test
-    public void testDoubleUpdate() {
+    public void testDoubleAddLastname() {
         //arrange
         Model pablo = createArtist("Picasso").build();
-        Model pablo2 = create("Picasso", "Picasso", "Carpenter").build();
-
-        //add pablo the artist
-        tripleStore.add(pablo);
+        Model pablo2 = createArtist("Picasso", "YetAnotherPicasso").build();
 
         //act
-        //update it to pablo the carpenter
-        tripleStore.update(pablo2);
+        tripleStore.add(pablo);
+        tripleStore.add(pablo2);
 
         //assert
         Model model = getStatementsFromStore();
 
-        assertEquals("There should be 2 statements", 2, model.size());
+        assertEquals("There should be 3 statements", 3, model.size());
 
         String[] names = model.filter(null, FOAF.LAST_NAME, null).
-                stream().map(m -> m.getObject().stringValue()).toArray(size -> new String[size]);
+                stream().map(m -> m.getObject().stringValue()).toArray(String[]::new);
 
-        assertEquals("There should be 1 last name", 1, names.length);
-        assertEquals("It should be Picasso", "Picasso", names[0]);
+        assertEquals("There should be 2 last name", 2, names.length);
+        String[] expectedNames = {"Picasso", "YetAnotherPicasso"};
+        assertArrayEquals("It should be Picasso and YetAnotherPicasso", expectedNames, names);
 
         List<String> types = model.filter(null, RDF.TYPE, null).
                 stream().map(m -> m.getObject().stringValue()).collect(toList());
 
         assertEquals("There should be one type", 1, types.size());
-        assertEquals("It should be one Carpenter", "http://example.org/Carpenter", types.get(0));
-
-        //Artist should have been removed as object
-        String[] objects = getStatementsFromStore().objects().stream().filter(s -> !(s instanceof SimpleLiteral)).map(s -> s.stringValue()).toArray(size -> new String[size]);
-        assertArrayEquals("Artist should be gone", new String[]{"http://example.org/Carpenter"}, objects);
+        assertEquals("It should be one Artist object", "http://example.org/Artist", types.get(0));
     }
 }

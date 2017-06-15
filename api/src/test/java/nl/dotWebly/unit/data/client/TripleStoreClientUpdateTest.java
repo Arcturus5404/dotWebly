@@ -10,6 +10,7 @@ import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
+import org.eclipse.rdf4j.query.algebra.evaluation.iterator.CollectionIteration;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.junit.Test;
@@ -28,48 +29,36 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientUpdateTest {
-
-    @Mock
-    TripleStoreRepository repository;
-
-    @Mock
-    RepositoryConnection connection;
-
-    @InjectMocks
-    private TripleStoreClient client = new TripleStoreClientImpl();
+public class TripleStoreClientUpdateTest extends TripleStoreClientTest {
 
     @Test
     public void testUpdateCallsMethods() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
         Model picasso = createArtist("Picasso").build();
 
         //act
         client.update(picasso);
+        initConnectionConsumer();
 
         //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
         verify(connection).add(picasso);
     }
 
     @Test
     public void testUpdateWithExistingData() {
         //arrange
-        when(repository.getConnection()).thenReturn(connection);
-        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
+        Model result = createArtist("ExistingPicasso").build();
+        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<>(new CollectionIteration<>(result)));
 
         Model picasso = createArtist("Picasso").build();
 
         //act
         client.update(picasso);
+        initConnectionConsumer();
 
         //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
         verify(connection).add(picasso);
     }
 

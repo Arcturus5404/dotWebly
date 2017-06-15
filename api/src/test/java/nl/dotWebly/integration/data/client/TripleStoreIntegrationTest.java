@@ -1,8 +1,8 @@
-package nl.dotWebly.integration.data;
+package nl.dotWebly.integration.data.client;
 
 import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.repository.TripleStoreRepository;
-import nl.dotWebly.integration.data.configuration.SailMemoryTestConfiguration;
+import nl.dotWebly.integration.data.client.configuration.SailMemoryTestConfiguration;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.common.iteration.Iterations;
 import org.eclipse.rdf4j.model.Model;
@@ -10,7 +10,6 @@ import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -35,13 +34,10 @@ public abstract class TripleStoreIntegrationTest {
 
     @Before
     public void clearData(){
-        try(RepositoryConnection connection = repository.getConnection()) {
+        repository.performQuery(connection -> {
             connection.clear();
             connection.clearNamespaces();
-        }
-        finally {
-            repository.shutDown();
-        }
+        });
     }
 
     // Helper methods
@@ -64,24 +60,16 @@ public abstract class TripleStoreIntegrationTest {
     }
 
     protected void addModelToStore(Model model) {
-        try (RepositoryConnection connection = repository.getConnection()) {
+        repository.performQuery(connection -> {
             connection.add(model);
             connection.commit();
-        }
-        finally {
-            repository.shutDown();
-        }
+        });
     }
 
     // Helper methods
     protected Model getStatementsFromStore() {
-        try (RepositoryConnection connection = repository.getConnection()) {
-            Model result = new LinkedHashModel();
-            Iterations.addAll(connection.getStatements(null, null, null), result);
-            return result;
-        }
-        finally {
-            repository.shutDown();
-        }
+        Model result = new LinkedHashModel();
+        repository.performQuery( connection -> Iterations.addAll(connection.getStatements(null, null, null), result));
+        return result;
     }
 }

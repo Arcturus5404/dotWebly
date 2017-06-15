@@ -4,44 +4,44 @@ import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
 import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.test.categories.Categories;
-import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.eq;
+import java.util.function.Consumer;
+
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
- * Created by Rick Fleuren on 6/9/2017.
+ * Created by Rick Fleuren on 6/15/2017.
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientClearAllTest extends TripleStoreClientTest {
+public abstract class TripleStoreClientTest {
+    @Mock
+    TripleStoreRepository repository;
 
     @Mock
-    IRI subjectIri;
+    RepositoryConnection connection;
+
+    @Mock
+    ValueFactory valueFactory;
 
     @InjectMocks
-    private TripleStoreClient client = new TripleStoreClientImpl();
+    protected TripleStoreClient client = new TripleStoreClientImpl();
 
-    @Test
-    public void testClearAllCallsMethods() {
-        //arrange
-        when(connection.getValueFactory()).thenReturn(valueFactory);
+    @Captor
+    private ArgumentCaptor<Consumer<RepositoryConnection>> connectionCaptor;
 
-        //act
-        client.clearAllTriples();
-        initConnectionConsumer();
-
-        //assert
-        verify(connection).clear();
-        verify(connection).clearNamespaces();
+    protected void initConnectionConsumer() {
+        //catch the consumer and pass the mock
+        verify(repository).performQuery(connectionCaptor.capture());
+        connectionCaptor.getValue().accept(connection);
     }
 }
