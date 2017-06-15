@@ -33,6 +33,8 @@ public class SailMemoryRepository implements TripleStoreRepository {
         memoryStore.setPersist(true);
 
         repository = new org.eclipse.rdf4j.repository.sail.SailRepository(memoryStore);
+        repository.initialize();
+
         if(clearData.orElse(Boolean.FALSE)) {
             clearAllData();
         }
@@ -50,7 +52,6 @@ public class SailMemoryRepository implements TripleStoreRepository {
 
     @Override
     public RepositoryConnection getConnection() {
-        repository.initialize();
         return repository.getConnection();
     }
     @Override

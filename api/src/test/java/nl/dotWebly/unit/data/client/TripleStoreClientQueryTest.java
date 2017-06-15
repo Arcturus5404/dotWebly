@@ -1,4 +1,4 @@
-package nl.dotWebly.unit.data;
+package nl.dotWebly.unit.data.client;
 
 import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.client.impl.TripleStoreClientImpl;

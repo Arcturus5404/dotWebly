@@ -1,15 +1,18 @@
-package nl.dotWebly.unit.data;
+package nl.dotWebly.unit.data.client;
 
 import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
 import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.common.iteration.EmptyIteration;
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
+import org.eclipse.rdf4j.query.algebra.evaluation.iterator.CollectionIteration;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.junit.Test;
@@ -19,7 +22,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +38,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientUpdateTest {
+public class TripleStoreClientQueryBySubjectTest {
 
     @Mock
     TripleStoreRepository repository;
@@ -36,41 +46,63 @@ public class TripleStoreClientUpdateTest {
     @Mock
     RepositoryConnection connection;
 
+    @Mock
+    ValueFactory valueFactory;
+
+    @Mock
+    IRI subjectIri;
+
     @InjectMocks
     private TripleStoreClient client = new TripleStoreClientImpl();
 
-    @Test
-    public void testUpdateCallsMethods() {
+    @Test(expected = AssertionError.class)
+    public void testQueryByInvalidSubject() {
         //arrange
         when(repository.getConnection()).thenReturn(connection);
+        when(connection.getValueFactory()).thenReturn(valueFactory);
+        when(valueFactory.createIRI(anyString())).thenReturn(subjectIri);
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
-        Model picasso = createArtist("Picasso").build();
-
-        //act
-        client.update(picasso);
-
-        //assert
-        verify(repository).getConnection();
-        verify(repository).shutDown();
-        verify(connection).add(picasso);
+        //act & assert
+        client.queryBySubject(null);
     }
 
     @Test
-    public void testUpdateWithExistingData() {
+    public void testQueryBySubjectEmptyResult() {
         //arrange
         when(repository.getConnection()).thenReturn(connection);
-        when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
-
-        Model picasso = createArtist("Picasso").build();
+        when(connection.getValueFactory()).thenReturn(valueFactory);
+        when(valueFactory.createIRI(eq("subject"))).thenReturn(subjectIri);
+        when(connection.getStatements(eq(subjectIri), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
         //act
-        client.update(picasso);
+        Model model = client.queryBySubject("subject");
+
+        //assert
+        assertNotNull("Model should not be null", model);
+        assertNotNull("Model size should not be 0", model.size());
+    }
+
+    @Test
+    public void testQueryBySubjectReturnsData() {
+        //arrange
+        when(repository.getConnection()).thenReturn(connection);
+        when(connection.getValueFactory()).thenReturn(valueFactory);
+        when(valueFactory.createIRI(eq("subject"))).thenReturn(subjectIri);
+
+        Model picasso = createArtist("Picasso").build();
+        Model ross = createArtist("Ross").build();
+
+        List<Statement> statements = Stream.concat(picasso.stream(), ross.stream()).collect(toList());
+        when(connection.getStatements(eq(subjectIri), any(), any())).thenReturn(new RepositoryResult<Statement>(new CollectionIteration<>(statements)));
+
+        //act
+        client.queryBySubject("subject");
 
         //assert
         verify(repository).getConnection();
         verify(repository).shutDown();
-        verify(connection).add(picasso);
+        verify(connection).getStatements(subjectIri, null, null);
     }
 
     private ModelBuilder createArtist(String artistName) {
