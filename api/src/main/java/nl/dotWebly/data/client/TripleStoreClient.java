@@ -1,6 +1,9 @@
 package nl.dotWebly.data.client;
 
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Value;
+import org.springframework.core.io.Resource;
 
 import java.util.List;
 
@@ -8,7 +11,6 @@ import java.util.List;
  * Created by Rick Fleuren on 6/9/2017.
  */
 public interface TripleStoreClient {
-
 
     /**
      * Query all triples in the datasource
@@ -22,6 +24,12 @@ public interface TripleStoreClient {
      * @return model with all statements from the datasource with the given subject
      */
     Model queryBySubject(String subject);
+
+    /**
+     * Query all triples in the datasource filtered by a combination of subject, predicate or object
+     * @return model with all statements from the datasource
+     */
+    Model queryBy(String subject, String predicate, String object);
 
 
     /**

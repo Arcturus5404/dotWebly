@@ -1,6 +1,7 @@
 package nl.dotWebly.integration.data.client.configuration;
 
 import nl.dotWebly.data.client.TripleStoreClient;
+import nl.dotWebly.data.client.impl.SailMemoryTripleStoreClient;
 import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
 import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.data.repository.impl.SailMemoryRepository;
@@ -16,11 +17,11 @@ import org.springframework.context.annotation.Configuration;
 public class SailMemoryTestConfiguration {
 
     @Bean
-    public TripleStoreRepository getTripleStoreRepository() {
+    public SailMemoryRepository getTripleStoreRepository() {
         return new SailMemoryRepository();
     }
     @Bean
-    public TripleStoreClient getTripleStoreClient() {
-        return new TripleStoreClientImpl();
+    public SailMemoryTripleStoreClient getTripleStoreClient() {
+        return new SailMemoryTripleStoreClient();
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 
 @Configuration
-@ComponentScan(basePackages = {"nl.dotWebly"})
+@ComponentScan(basePackages = {"nl.dotWebly.api", "nl.dotWebly.data"})
 @EnableAutoConfiguration
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {

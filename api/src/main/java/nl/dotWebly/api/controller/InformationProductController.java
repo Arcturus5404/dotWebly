@@ -1,6 +1,6 @@
 package nl.dotWebly.api.controller;
 
-import nl.dotWebly.data.client.TripleStoreClient;
+import nl.dotWebly.data.service.InformationProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,16 +15,16 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/api/v1/informationproducts")
 public class InformationProductController {
 
-    private TripleStoreClient client;
+    private final InformationProductsService service;
 
     @Autowired
-    public InformationProductController(TripleStoreClient client) {
-        this.client = client;
+    public InformationProductController(InformationProductsService service) {
+        this.service = service;
     }
 
     @RequestMapping
     public ResponseEntity<String[]> getAllProducts() {
-        return ResponseEntity.ok(new String[0]);
+        return ResponseEntity.ok(service.getInformationProducts());
     }
 
 }

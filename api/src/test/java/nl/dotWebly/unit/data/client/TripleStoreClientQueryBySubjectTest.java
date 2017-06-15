@@ -2,18 +2,15 @@ package nl.dotWebly.unit.data.client;
 
 import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
-import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.common.iteration.EmptyIteration;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.query.algebra.evaluation.iterator.CollectionIteration;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,9 +39,6 @@ public class TripleStoreClientQueryBySubjectTest extends TripleStoreClientTest {
 
     @Mock
     IRI subjectIri;
-
-    @InjectMocks
-    private TripleStoreClient client = new TripleStoreClientImpl();
 
     @Test(expected = AssertionError.class)
     public void testQueryByInvalidSubject() {

@@ -31,11 +31,7 @@ public class ModelControllerTest {
     @Mock
     TripleStoreClient client;
 
-    @InjectMocks
-    private ModelController controller = new ModelController();
-
-    @Before
-    public void init() {
+    public void init(ModelController controller) {
         ReflectionTestUtils.setField(controller, "defaultNamespace", "default/");
     }
 
@@ -44,6 +40,9 @@ public class ModelControllerTest {
         //arrange
         LinkedHashModel model = new LinkedHashModel();
         when(client.query()).thenReturn(model);
+
+        ModelController controller = new ModelController(client);
+        init(controller);
 
         //act
         ResponseEntity<Model> result = controller.getModels();
@@ -58,6 +57,8 @@ public class ModelControllerTest {
         //arrange
         LinkedHashModel model = new LinkedHashModel();
         when(client.queryBySubject(eq("default/subject"))).thenReturn(model);
+        ModelController controller = new ModelController(client);
+        init(controller);
 
         //act
         ResponseEntity<Model> result = controller.getModel("subject", null);
@@ -72,6 +73,8 @@ public class ModelControllerTest {
         //arrange
         LinkedHashModel model = new LinkedHashModel();
         when(client.queryBySubject(eq("myNamespace/subject"))).thenReturn(model);
+        ModelController controller = new ModelController(client);
+        init(controller);
 
         //act
         ResponseEntity<Model> result = controller.getModel("subject", "myNamespace/");
@@ -83,6 +86,10 @@ public class ModelControllerTest {
 
     @Test
     public void testDeleteBySubjectDefaultNamespace() {
+        //arrange
+        ModelController controller = new ModelController(client);
+        init(controller);
+
         //act
         controller.deleteModel("subject", null);
 
@@ -92,6 +99,10 @@ public class ModelControllerTest {
 
     @Test
     public void testDeleteBySubject() {
+        //arrange
+        ModelController controller = new ModelController(client);
+        init(controller);
+
         //act
         controller.deleteModel("subject", "myNamespace/");
 

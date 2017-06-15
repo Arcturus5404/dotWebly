@@ -27,8 +27,12 @@ public class ModelController {
     @Value("${default.namespace}")
     String defaultNamespace;
 
+    private final TripleStoreClient client;
+
     @Autowired
-    private TripleStoreClient client;
+    public ModelController(TripleStoreClient client) {
+        this.client = client;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Model> getModels() {

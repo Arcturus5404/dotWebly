@@ -24,16 +24,16 @@ import java.util.Map;
 /**
  * Created by Rick Fleuren on 6/15/2017.
  */
-@org.springframework.stereotype.Repository
-public class FileRepository extends Rdf4JRepository {
+@org.springframework.stereotype.Repository("File")
+public class ConfigurationRepository extends Rdf4JRepository {
 
     private Repository repository;
 
     @Autowired
-    public FileRepository(ResourceLoader resourceLoader,
-                          @Value("${default.namespace}") String defaultNamespace,
-                          @Value("${file.init.repositoryName}") String repositoryName,
-                          @Value("${file.init.files}") String... files)
+    public ConfigurationRepository(ResourceLoader resourceLoader,
+                                   @Value("${default.namespace}") String defaultNamespace,
+                                   @Value("${file.init.foldername}") String repositoryName,
+                                   @Value("${file.init.files}") String... files)
             throws IOException {
         MemoryStore memoryStore = new MemoryStore(new File(repositoryName));
 

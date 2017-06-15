@@ -21,14 +21,12 @@ import java.util.function.Consumer;
 /**
  * Created by Rick Fleuren on 6/9/2017.
  */
-
-@Service
-public class TripleStoreClientImpl implements TripleStoreClient {
+public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> implements TripleStoreClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(TripleStoreClientImpl.class);
 
     @Autowired
-    TripleStoreRepository repository;
+    private R repository;
 
     public Model add(Model model) {
         LinkedHashModel result = new LinkedHashModel();
@@ -78,7 +76,14 @@ public class TripleStoreClientImpl implements TripleStoreClient {
         assert subject != null;
 
         Model model = new LinkedHashModel();
-        getStatementsBySubject(subject, result -> Iterations.addAll(result, model));
+        getStatements(subject, null, null, result -> Iterations.addAll(result, model));
+        return model;
+    }
+
+    @Override
+    public Model queryBy(String subject, String predicate, String object) {
+        Model model = new LinkedHashModel();
+        getStatements(subject, predicate, object, result -> Iterations.addAll(result, model));
         return model;
     }
 
@@ -120,16 +125,14 @@ public class TripleStoreClientImpl implements TripleStoreClient {
         getStatements(null, null, null, consumer);
     }
 
-    private void getStatementsBySubject(String subject, Consumer<RepositoryResult<Statement>> consumer) {
-        getStatements(subject, null, null, consumer);
-    }
-
-    private void getStatements(String subject, IRI predicate, Value object, Consumer<RepositoryResult<Statement>> consumer) {
+    private void getStatements(String subject, String predicate, String object, Consumer<RepositoryResult<Statement>> consumer) {
         repository.performQuery(connection -> {
                     ValueFactory factory = connection.getValueFactory();
                     Resource resourceSubject = subject != null ? factory.createIRI(subject) : null;
+                    IRI iriPredicate = subject != null ? factory.createIRI(predicate) : null;
+                    Value valueObject = object != null ? factory.createBNode(object) : null;
 
-                    try (RepositoryResult<Statement> result = connection.getStatements(resourceSubject, predicate, object)) {
+                    try (RepositoryResult<Statement> result = connection.getStatements(resourceSubject, iriPredicate, valueObject)) {
                         consumer.accept(result);
                     }
                 }

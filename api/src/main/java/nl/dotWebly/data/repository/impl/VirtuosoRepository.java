@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * Created by Rick Fleuren on 6/9/2017.
  */
 
-@Repository
+@Repository("Virtuoso")
 //@Primary
 public class VirtuosoRepository extends Rdf4JRepository {
 

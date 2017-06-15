@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 /**
  * Created by Rick Fleuren on 6/15/2017.
  */
-@org.springframework.stereotype.Repository
+@org.springframework.stereotype.Repository("SPARQL")
 public class SPARQLRepository extends Rdf4JRepository {
 
     private Repository repository;

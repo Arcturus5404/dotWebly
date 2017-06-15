@@ -2,11 +2,8 @@ package nl.dotWebly.unit.data.client;
 
 import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
-import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.IRI;
-import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -27,9 +24,6 @@ public class TripleStoreClientClearAllTest extends TripleStoreClientTest {
 
     @Mock
     IRI subjectIri;
-
-    @InjectMocks
-    private TripleStoreClient client = new TripleStoreClientImpl();
 
     @Test
     public void testClearAllCallsMethods() {

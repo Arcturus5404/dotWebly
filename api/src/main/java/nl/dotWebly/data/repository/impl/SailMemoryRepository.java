@@ -12,7 +12,7 @@ import java.io.File;
  * Created by Rick Fleuren on 6/9/2017.
  */
 
-@org.springframework.stereotype.Repository
+@org.springframework.stereotype.Repository("Memory")
 @Primary
 public class SailMemoryRepository extends Rdf4JRepository {
     private Repository repository;

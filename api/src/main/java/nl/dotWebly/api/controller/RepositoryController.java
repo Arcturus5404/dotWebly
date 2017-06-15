@@ -22,8 +22,12 @@ import org.springframework.web.bind.annotation.*;
 public class RepositoryController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryController.class);
 
+    private final TripleStoreClient client;
+
     @Autowired
-    private TripleStoreClient client;
+    public RepositoryController(TripleStoreClient client) {
+        this.client = client;
+    }
 
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<Model> deleteAllData() {

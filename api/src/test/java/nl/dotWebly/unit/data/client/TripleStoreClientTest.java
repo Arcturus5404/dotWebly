@@ -1,6 +1,7 @@
 package nl.dotWebly.unit.data.client;
 
 import nl.dotWebly.data.client.TripleStoreClient;
+import nl.dotWebly.data.client.impl.SailMemoryTripleStoreClient;
 import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
 import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.test.categories.Categories;
@@ -34,7 +35,7 @@ public abstract class TripleStoreClientTest {
     ValueFactory valueFactory;
 
     @InjectMocks
-    protected TripleStoreClient client = new TripleStoreClientImpl();
+    protected TripleStoreClient client = new SailMemoryTripleStoreClient();
 
     @Captor
     private ArgumentCaptor<Consumer<RepositoryConnection>> connectionCaptor;

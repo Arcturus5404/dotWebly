@@ -1,7 +1,7 @@
 package nl.dotWebly.unit.data.repository;
 
 import nl.dotWebly.data.repository.TripleStoreRepository;
-import nl.dotWebly.data.repository.impl.FileRepository;
+import nl.dotWebly.data.repository.impl.ConfigurationRepository;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.common.iteration.Iterations;
 import org.eclipse.rdf4j.model.Model;
@@ -15,9 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
@@ -30,7 +28,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class FileRepositoryTest {
+public class ConfigurationRepositoryTest {
 
     @Mock
     ResourceLoader resourceLoader;
@@ -46,7 +44,7 @@ public class FileRepositoryTest {
     @Test
     public void testInitialize() throws IOException {
         //arrange
-        FileRepository repository = new FileRepository(resourceLoader, "testfile.data","test.data");
+        ConfigurationRepository repository = new ConfigurationRepository(resourceLoader, "testfile.data","test.data");
 
         //act
         Model result = getModels(repository);
@@ -60,7 +58,7 @@ public class FileRepositoryTest {
         //arrange
         when(resourceLoader.getResource(eq("pablo.ttl"))).thenReturn(resource);
         when(resource.getInputStream()).thenReturn(new ByteArrayInputStream(pabloTtl.getBytes(StandardCharsets.UTF_8)));
-        FileRepository repository = new FileRepository(resourceLoader, "", "test.data","pablo.ttl");
+        ConfigurationRepository repository = new ConfigurationRepository(resourceLoader, "", "test","pablo.ttl");
 
         //act
         Model result = getModels(repository);
