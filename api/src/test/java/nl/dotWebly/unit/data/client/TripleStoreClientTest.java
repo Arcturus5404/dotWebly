@@ -4,12 +4,14 @@ import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.client.impl.SailMemoryTripleStoreClient;
 import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.test.categories.Categories;
-import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -18,7 +20,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Rick Fleuren on 6/15/2017.
@@ -54,8 +57,9 @@ public abstract class TripleStoreClientTest {
     protected void initConnectionFunction() {
         when(repository.performQuery((Function<RepositoryConnection, ?>) any())).thenAnswer(
                 new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) {
-                return ((Function<RepositoryConnection, ? extends Object>) invocation.getArguments()[0]).apply(connection);
-            }});
+                    public Object answer(InvocationOnMock invocation) {
+                        return ((Function<RepositoryConnection, ? extends Object>) invocation.getArguments()[0]).apply(connection);
+                    }
+                });
     }
 }

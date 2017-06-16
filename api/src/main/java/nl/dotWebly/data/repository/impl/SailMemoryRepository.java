@@ -31,16 +31,16 @@ public class SailMemoryRepository extends Rdf4JRepository {
 
         repository = new org.eclipse.rdf4j.repository.sail.SailRepository(memoryStore);
 
-        if(clearData) {
+        if (clearData) {
             clearAllData();
         }
     }
 
     private void clearAllData() {
         performQuery(connection -> {
-                    connection.clear();
-                    connection.clearNamespaces();
-                });
+            connection.clear();
+            connection.clearNamespaces();
+        });
     }
 
     @Override

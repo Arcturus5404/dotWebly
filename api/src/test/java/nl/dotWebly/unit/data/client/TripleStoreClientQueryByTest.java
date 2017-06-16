@@ -18,11 +18,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.function.BiConsumer;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Rick Fleuren on 6/9/2017.
@@ -65,7 +64,7 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
         initConnectionFunction();
 
         //act
-        Model model = client.queryBy(null,null,null);
+        Model model = client.queryBy(null, null, null);
 
         //assert
         assertNotNull("Model should not be null", model);
@@ -79,7 +78,7 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
         initConnectionFunction();
 
         //act
-        client.queryBy(null,null,null);
+        client.queryBy(null, null, null);
 
         //assert
         verify(connection).getStatements(null, null, null);
@@ -96,7 +95,7 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
         initConnectionFunction();
 
         //act
-        client.queryBy("subjectMock","predicateMock","objectMock");
+        client.queryBy("subjectMock", "predicateMock", "objectMock");
 
         //assert
         verify(connection).getStatements(subjectMock, predicateMock, objectMock);
@@ -106,30 +105,37 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
     public void convertsObjectParametersToLiteralString() {
         runConversionTest("myString", (vf, v) -> when(vf.createLiteral(v)).thenReturn(objectMock));
     }
+
     @Test
     public void convertsObjectParametersToLiteralBoolean() {
         runConversionTest(true, (vf, v) -> when(vf.createLiteral(v)).thenReturn(objectMock));
     }
+
     @Test
     public void convertsObjectParametersToLiteralInteger() {
         runConversionTest(42, (vf, v) -> when(vf.createLiteral(v)).thenReturn(objectMock));
     }
+
     @Test
     public void convertsObjectParametersToLiteralDouble() {
         runConversionTest(42d, (vf, v) -> when(vf.createLiteral(v)).thenReturn(objectMock));
     }
+
     @Test
     public void convertsObjectParametersToLiteralFloat() {
         runConversionTest(42f, (vf, v) -> when(vf.createLiteral(v)).thenReturn(objectMock));
     }
+
     @Test
     public void convertsObjectParametersToLiteralLong() {
         runConversionTest(42l, (vf, v) -> when(vf.createLiteral(v)).thenReturn(objectMock));
     }
+
     @Test
     public void convertsObjectParametersToLiteralBigDecimal() {
         runConversionTest(new BigDecimal(42), (vf, v) -> when(vf.createLiteral(v)).thenReturn(objectMock));
     }
+
     @Test
     public void convertsObjectParametersToLiteralDate() {
         runConversionTest(new Date(42), (vf, v) -> when(vf.createLiteral(v)).thenReturn(objectMock));
@@ -142,7 +148,7 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
         initConnectionFunction();
 
         //act
-        client.queryBy(null,null, objectToConvert);
+        client.queryBy(null, null, objectToConvert);
 
         //assert
         verify(connection).getStatements(null, null, objectMock);
@@ -156,7 +162,7 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
         initConnectionFunction();
 
         //act
-        client.queryBy(null,null,"http://example.org");
+        client.queryBy(null, null, "http://example.org");
 
         //assert
         verify(connection).getStatements(null, null, subjectMock);

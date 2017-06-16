@@ -5,11 +5,9 @@ import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
@@ -107,6 +105,7 @@ public class ModelControllerTest {
         controller.deleteModel("subject", "myNamespace/");
 
         //assert
-        verify(client).deleteBySubject("myNamespace/subject");;
+        verify(client).deleteBySubject("myNamespace/subject");
+        ;
     }
 }

@@ -1,0 +1,46 @@
+package nl.dotWebly.unit.data.client;
+
+import nl.dotWebly.test.categories.Categories;
+import org.eclipse.rdf4j.query.TupleQuery;
+import org.eclipse.rdf4j.query.TupleQueryResult;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+/**
+ * Created by Rick Fleuren on 6/9/2017.
+ */
+@RunWith(MockitoJUnitRunner.class)
+@Category(Categories.UnitTests.class)
+public class TripleStoreClientTupleQueryTest extends TripleStoreClientTest {
+
+    @Mock
+    TupleQuery tupleQuery;
+
+    @Mock
+    TupleQueryResult tupleQueryResult;
+
+    @Test
+    public void testQueryCallsMethods() {
+        //arrange
+        when(connection.prepareTupleQuery(eq("myQuery"))).thenReturn(tupleQuery);
+        when(tupleQuery.evaluate()).thenReturn(tupleQueryResult);
+        initConnectionFunction();
+
+        //act
+        TupleQueryResult result = client.select("myQuery");
+
+        //assert
+        verify(tupleQuery).evaluate();
+        assertNotNull("Model should have been returned", result);
+        assertEquals("With same contents", tupleQueryResult, result);
+    }
+}

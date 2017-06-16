@@ -1,13 +1,11 @@
 package nl.dotWebly.api.controller;
 
 import nl.dotWebly.data.service.InformationProduct;
-import nl.dotWebly.data.service.InformationProductsService;
+import nl.dotWebly.data.service.InformationProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * Created by Rick Fleuren on 6/12/2017.
@@ -16,10 +14,10 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/api/v1/informationproducts")
 public class InformationProductController {
 
-    private final InformationProductsService service;
+    private final InformationProductService service;
 
     @Autowired
-    public InformationProductController(InformationProductsService service) {
+    public InformationProductController(InformationProductService service) {
         this.service = service;
     }
 

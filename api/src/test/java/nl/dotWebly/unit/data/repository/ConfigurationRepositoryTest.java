@@ -37,14 +37,14 @@ public class ConfigurationRepositoryTest {
     Resource resource;
 
     private String pabloTtl =
-        "<http://example.org/Picasso> a <http://example.org/Artist> ;\n" +
-            "\t<http://xmlns.com/foaf/0.1/firstName> \"Pablo\" ;\n" +
-            "\t<http://xmlns.com/foaf/0.1/lastName> \"Picasso\" .";
+            "<http://example.org/Picasso> a <http://example.org/Artist> ;\n" +
+                    "\t<http://xmlns.com/foaf/0.1/firstName> \"Pablo\" ;\n" +
+                    "\t<http://xmlns.com/foaf/0.1/lastName> \"Picasso\" .";
 
     @Test
     public void testInitialize() throws IOException {
         //arrange
-        ConfigurationRepository repository = new ConfigurationRepository(resourceLoader, "testfile.data","test.data");
+        ConfigurationRepository repository = new ConfigurationRepository(resourceLoader, "testfile.data", "test.data");
 
         //act
         Model result = getModels(repository);
@@ -58,7 +58,7 @@ public class ConfigurationRepositoryTest {
         //arrange
         when(resourceLoader.getResource(eq("pablo.ttl"))).thenReturn(resource);
         when(resource.getInputStream()).thenReturn(new ByteArrayInputStream(pabloTtl.getBytes(StandardCharsets.UTF_8)));
-        ConfigurationRepository repository = new ConfigurationRepository(resourceLoader, "", "test","pablo.ttl");
+        ConfigurationRepository repository = new ConfigurationRepository(resourceLoader, "", "test", "pablo.ttl");
 
         //act
         Model result = getModels(repository);

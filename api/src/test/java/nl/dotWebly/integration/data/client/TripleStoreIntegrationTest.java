@@ -34,7 +34,7 @@ public abstract class TripleStoreIntegrationTest {
     protected TripleStoreClient tripleStore;
 
     @Before
-    public void clearData(){
+    public void clearData() {
         repository.performQuery(connection -> {
             connection.clear();
             connection.clearNamespaces();

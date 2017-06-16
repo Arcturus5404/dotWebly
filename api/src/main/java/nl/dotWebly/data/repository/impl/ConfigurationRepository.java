@@ -13,12 +13,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,7 +50,7 @@ public class ConfigurationRepository extends Rdf4JRepository {
     }
 
     private void initialiseData(ResourceLoader resourceLoader, String defaultNamespace, String[] files) throws IOException {
-        if(files == null) {
+        if (files == null) {
             return;
         }
 

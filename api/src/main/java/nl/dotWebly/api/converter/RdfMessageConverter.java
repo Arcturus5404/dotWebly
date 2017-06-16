@@ -7,16 +7,11 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Created by Rick Fleuren on 6/12/2017.
@@ -27,7 +22,7 @@ public class RdfMessageConverter extends AbstractHttpMessageConverter<Model> {
 
     /**
      * The converter for content negotiation. All {@link Model} objects will be converted with the Rio parser
-     *
+     * <p>
      * Make sure you define a namespace on your headers for formats with relative paths, like JSON-ID
      *
      * @param format The format to be supported by the converter
@@ -40,6 +35,7 @@ public class RdfMessageConverter extends AbstractHttpMessageConverter<Model> {
 
         this.format = format;
     }
+
     @Override
     protected boolean supports(Class<?> aClass) {
         return Model.class.isAssignableFrom(aClass);

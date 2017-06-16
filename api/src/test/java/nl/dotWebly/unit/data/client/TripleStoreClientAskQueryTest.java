@@ -1,13 +1,14 @@
 package nl.dotWebly.unit.data.client;
 
 import nl.dotWebly.test.categories.Categories;
-import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.query.BooleanQuery;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,22 +18,23 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class TripleStoreClientDeleteTest extends TripleStoreClientTest {
+public class TripleStoreClientAskQueryTest extends TripleStoreClientTest {
 
     @Mock
-    IRI subjectIri;
+    BooleanQuery booleanQuery;
 
     @Test
-    public void testDeleteCallsMethods() {
+    public void testQueryCallsMethods() {
         //arrange
-        when(connection.getValueFactory()).thenReturn(valueFactory);
-        when(valueFactory.createIRI(eq("subjectMock"))).thenReturn(subjectIri);
-        initConnectionConsumer();
+        when(connection.prepareBooleanQuery(eq("myQuery"))).thenReturn(booleanQuery);
+        when(booleanQuery.evaluate()).thenReturn(true);
+        initConnectionFunction();
 
         //act
-        client.deleteBySubject("subjectMock");
+        boolean result = client.ask("myQuery");
 
         //assert
-        verify(connection).remove(subjectIri, null, null);
+        verify(booleanQuery).evaluate();
+        assertTrue(result);
     }
 }

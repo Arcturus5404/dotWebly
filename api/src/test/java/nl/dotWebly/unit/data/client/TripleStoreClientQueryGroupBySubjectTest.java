@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 @Category(Categories.UnitTests.class)
 public class TripleStoreClientQueryGroupBySubjectTest extends TripleStoreClientTest {
 
-      @Test
+    @Test
     public void testQueryGroupedBySubjectEmptyResult() {
         //arrange
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));

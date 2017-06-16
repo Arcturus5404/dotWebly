@@ -9,4 +9,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Primary
-public class SailMemoryTripleStoreClient extends TripleStoreClientImpl<SailMemoryRepository> { }
+public class SailMemoryTripleStoreClient extends TripleStoreClientImpl<SailMemoryRepository> {
+}

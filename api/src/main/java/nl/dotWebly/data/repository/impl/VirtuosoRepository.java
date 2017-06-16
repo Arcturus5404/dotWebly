@@ -1,10 +1,7 @@
 package nl.dotWebly.data.repository.impl;
 
-import nl.dotWebly.data.repository.TripleStoreRepository;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -22,7 +19,7 @@ public class VirtuosoRepository extends Rdf4JRepository {
                               @Value("${virtuoso.connection.user}") String user,
                               @Value("${virtuoso.connection.password}") String password,
                               @Value("${virtuoso.default.graph}") String graph) {
-        repository = new virtuoso.rdf4j.driver.VirtuosoRepository(url,user,password,graph);
+        repository = new virtuoso.rdf4j.driver.VirtuosoRepository(url, user, password, graph);
         repository.initialize();
     }
 

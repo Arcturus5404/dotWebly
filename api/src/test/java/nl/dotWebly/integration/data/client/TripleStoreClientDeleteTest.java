@@ -1,13 +1,8 @@
 package nl.dotWebly.integration.data.client;
 
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.vocabulary.FOAF;
-import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.junit.Test;
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 /**

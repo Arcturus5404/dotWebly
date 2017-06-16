@@ -4,7 +4,6 @@ import nl.dotWebly.data.repository.TripleStoreRepository;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -28,10 +27,9 @@ public abstract class Rdf4JRepository implements TripleStoreRepository {
         Repository repository = getRepository();
         repository.initialize();
 
-        try(RepositoryConnection connection = repository.getConnection()) {
+        try (RepositoryConnection connection = repository.getConnection()) {
             return performQuery.apply(connection);
-        }
-        finally {
+        } finally {
             repository.shutDown();
         }
     }

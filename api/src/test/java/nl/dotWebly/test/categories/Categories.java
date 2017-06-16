@@ -5,7 +5,9 @@ package nl.dotWebly.test.categories;
  */
 
 public class Categories {
-    public interface IntegrationTests { }
+    public interface IntegrationTests {
+    }
 
-    public interface UnitTests { }
+    public interface UnitTests {
+    }
 }

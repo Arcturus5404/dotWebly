@@ -2,6 +2,7 @@ package nl.dotWebly.data.client.impl;
 
 import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.repository.TripleStoreRepository;
+import nl.dotWebly.data.utils.ModelUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.eclipse.rdf4j.common.iteration.Iterations;
 import org.eclipse.rdf4j.model.*;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -48,10 +48,10 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
             LinkedHashModel result = new LinkedHashModel();
             //Check if the statement exist with subject / predicate
             model.forEach(s -> {
-                    if(c.hasStatement(s.getSubject(), s.getPredicate(), null, true)) {
-                        c.remove(s.getSubject(), s.getPredicate(), null);
+                        if (c.hasStatement(s.getSubject(), s.getPredicate(), null, true)) {
+                            c.remove(s.getSubject(), s.getPredicate(), null);
+                        }
                     }
-                }
             );
 
             //add the new model to the triple store
@@ -86,6 +86,7 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
             return booleanQuery.evaluate();
         });
     }
+
     @Override
     public TupleQueryResult select(String query) {
         return repository.performQuery(c -> {
@@ -93,6 +94,7 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
             return tupleQuery.evaluate();
         });
     }
+
     @Override
     public Model construct(String query) {
         return repository.performQuery(c -> {
@@ -107,19 +109,12 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
 
     @Override
     public List<Model> queryGroupedBySubject() {
-        return getStatements(null, null, null, result -> {
-            Map<Resource, Model> modelMap = new HashMap<>();
-            while (result.hasNext()) {
-                Statement statement = result.next();
-                Resource subject = statement.getSubject();
-
-                if(!modelMap.containsKey(subject)) {
-                    modelMap.put(subject, new LinkedHashModel());
-                }
-
-                modelMap.get(subject).add(statement);
+        return getStatements(null, null, null, statements -> {
+            List<Statement> result = new ArrayList<>();
+            while(statements.hasNext()) {
+                result.add(statements.next());
             }
-            return new ArrayList<>(modelMap.values());
+            return ModelUtils.filterBySubject(result);
         });
     }
 
