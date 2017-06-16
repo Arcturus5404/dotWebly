@@ -4,6 +4,7 @@ import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
 import nl.dotWebly.data.repository.impl.ConfigurationRepository;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.query.GraphQueryResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +26,15 @@ public class InformationProductsService {
      * Get all the information products
      * @return information products names
      */
-    public String[] getInformationProducts() {
-        Model model = client.queryBy(null, null, ELMO_INFORMATIONPRODUCT);
-        return model.subjects().stream().map(Resource::stringValue).toArray(String[]::new);
+    public InformationProduct[] getInformationProducts() {
+        Model result = client.construct("");
+
+        return null;//model.subjects().stream().map(this::toInformationProduct).toArray(InformationProduct[]::new);
     }
+//
+//    private InformationProduct toInformationProduct(Resource c) {
+//        return new InformationProduct[0];
+//    }
 
     /**
      * Get the meta data for the information product

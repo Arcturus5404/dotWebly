@@ -1,9 +1,7 @@
 package nl.dotWebly.data.client;
 
-import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Value;
-import org.springframework.core.io.Resource;
+import org.eclipse.rdf4j.query.TupleQueryResult;
 
 import java.util.List;
 
@@ -31,6 +29,23 @@ public interface TripleStoreClient {
      */
     <T> Model queryBy(String subject, String predicate, T object);
 
+    /**
+     * Query a select query by means of SPARQL
+     * @return model with all statements from the datasource
+     */
+    TupleQueryResult select(String query);
+
+    /**
+     * Query a construct or describe query by means of SPARQL
+     * @return model with all statements from the datasource
+     */
+    Model construct(String query);
+
+    /**
+     * Query an ask query or describe by means of SPARQL
+     * @return model with all statements from the datasource
+     */
+    boolean ask(String query);
 
     /**
      * Query all triples in the datasource and group them by subject

@@ -1,5 +1,6 @@
 package nl.dotWebly.api.controller;
 
+import nl.dotWebly.data.service.InformationProduct;
 import nl.dotWebly.data.service.InformationProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class InformationProductController {
     }
 
     @RequestMapping
-    public ResponseEntity<String[]> getAllProducts() {
+    public ResponseEntity<InformationProduct[]> getAllProducts() {
         return ResponseEntity.ok(service.getInformationProducts());
     }
 

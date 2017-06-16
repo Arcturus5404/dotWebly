@@ -1,8 +1,5 @@
 package nl.dotWebly.unit.data.client;
 
-import nl.dotWebly.data.client.TripleStoreClient;
-import nl.dotWebly.data.client.impl.SailMemoryTripleStoreClient;
-import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.common.iteration.EmptyIteration;
 import org.eclipse.rdf4j.model.*;
@@ -10,20 +7,16 @@ import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.query.algebra.evaluation.iterator.CollectionIteration;
-import org.eclipse.rdf4j.repository.Repository;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -54,10 +47,10 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
     public void testQueryByEmptyResult() {
         //arrange
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
+        initConnectionFunction();
 
         //act
         Model model = client.queryBy(null, null, null);
-        initConnectionConsumer();
 
         //assert
         assertNotNull("Model should not be null", model);
@@ -69,10 +62,10 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
         //arrange
         Model picasso = createArtist("Picasso").build();
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new CollectionIteration(picasso)));
+        initConnectionFunction();
 
         //act
         Model model = client.queryBy(null,null,null);
-        initConnectionConsumer();
 
         //assert
         assertNotNull("Model should not be null", model);
@@ -83,10 +76,10 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
     public void testQueryByCallsMethods() {
         //arrange
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
+        initConnectionFunction();
 
         //act
         client.queryBy(null,null,null);
-        initConnectionConsumer();
 
         //assert
         verify(connection).getStatements(null, null, null);
@@ -100,10 +93,10 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
         when(valueFactory.createIRI("subjectMock")).thenReturn(subjectMock);
         when(valueFactory.createIRI("predicateMock")).thenReturn(predicateMock);
         when(valueFactory.createLiteral("objectMock")).thenReturn(objectMock);
+        initConnectionFunction();
 
         //act
         client.queryBy("subjectMock","predicateMock","objectMock");
-        initConnectionConsumer();
 
         //assert
         verify(connection).getStatements(subjectMock, predicateMock, objectMock);
@@ -146,10 +139,10 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
         when(connection.getValueFactory()).thenReturn(valueFactory);
         consumer.accept(valueFactory, objectToConvert);
+        initConnectionFunction();
 
         //act
         client.queryBy(null,null, objectToConvert);
-        initConnectionConsumer();
 
         //assert
         verify(connection).getStatements(null, null, objectMock);
@@ -160,10 +153,10 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
         when(connection.getValueFactory()).thenReturn(valueFactory);
         when(valueFactory.createIRI("http://example.org")).thenReturn(subjectMock);
+        initConnectionFunction();
 
         //act
         client.queryBy(null,null,"http://example.org");
-        initConnectionConsumer();
 
         //assert
         verify(connection).getStatements(null, null, subjectMock);

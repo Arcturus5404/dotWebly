@@ -1,13 +1,10 @@
 package nl.dotWebly.unit.data.client;
 
-import nl.dotWebly.data.client.TripleStoreClient;
-import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.IRI;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -31,10 +28,10 @@ public class TripleStoreClientDeleteTest extends TripleStoreClientTest {
         //arrange
         when(connection.getValueFactory()).thenReturn(valueFactory);
         when(valueFactory.createIRI(eq("subjectMock"))).thenReturn(subjectIri);
+        initConnectionConsumer();
 
         //act
         client.deleteBySubject("subjectMock");
-        initConnectionConsumer();
 
         //assert
         verify(connection).remove(subjectIri, null, null);

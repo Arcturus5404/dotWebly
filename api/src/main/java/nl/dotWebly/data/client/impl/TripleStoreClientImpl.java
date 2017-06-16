@@ -6,6 +6,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.eclipse.rdf4j.common.iteration.Iterations;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
+import org.eclipse.rdf4j.query.*;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Created by Rick Fleuren on 6/9/2017.
@@ -31,23 +33,19 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
     private R repository;
 
     public Model add(Model model) {
-        LinkedHashModel result = new LinkedHashModel();
-
-        repository.performQuery(c -> {
+        return repository.performQuery(c -> {
+            LinkedHashModel result = new LinkedHashModel();
             c.add(model);
 
             //Get all the statements which belong to the subject:
             getModelBySubject(model, result, c);
+            return result;
         });
-
-        return result;
     }
 
     public Model update(Model model) {
-        LinkedHashModel result = new LinkedHashModel();
-
-        repository.performQuery(c -> {
-
+        return repository.performQuery(c -> {
+            LinkedHashModel result = new LinkedHashModel();
             //Check if the statement exist with subject / predicate
             model.forEach(s -> {
                     if(c.hasStatement(s.getSubject(), s.getPredicate(), null, true)) {
@@ -61,38 +59,56 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
 
             //Get all the statements which belong to the subject:
             getModelBySubject(model, result, c);
+            return result;
         });
-
-        return result;
     }
 
     @Override
     public Model query() {
-        Model model = new LinkedHashModel();
-        getStatements(result -> Iterations.addAll(result, model));
-        return model;
+        return getAllStatementsAsModel();
     }
 
     @Override
     public Model queryBySubject(String subject) {
         assert subject != null;
-
-        Model model = new LinkedHashModel();
-        getStatements(subject, null, null, result -> Iterations.addAll(result, model));
-        return model;
+        return getStatementsAsModel(subject, null, null);
     }
 
     @Override
     public <T> Model queryBy(String subject, String predicate, T object) {
-        Model model = new LinkedHashModel();
-        getStatements(subject, predicate, object, result -> Iterations.addAll(result, model));
-        return model;
+        return getStatementsAsModel(subject, predicate, object);
+    }
+
+    @Override
+    public boolean ask(String query) {
+        return repository.performQuery(c -> {
+            BooleanQuery booleanQuery = c.prepareBooleanQuery(query);
+            return booleanQuery.evaluate();
+        });
+    }
+    @Override
+    public TupleQueryResult select(String query) {
+        return repository.performQuery(c -> {
+            TupleQuery tupleQuery = c.prepareTupleQuery(query);
+            return tupleQuery.evaluate();
+        });
+    }
+    @Override
+    public Model construct(String query) {
+        return repository.performQuery(c -> {
+            Model model = new LinkedHashModel();
+            GraphQuery graphQuery = c.prepareGraphQuery(query);
+            GraphQueryResult result = graphQuery.evaluate();
+
+            Iterations.addAll(result, model);
+            return model;
+        });
     }
 
     @Override
     public List<Model> queryGroupedBySubject() {
-        Map<Resource, Model> modelMap = new HashMap<>();
-        getStatements(result -> {
+        return getStatements(null, null, null, result -> {
+            Map<Resource, Model> modelMap = new HashMap<>();
             while (result.hasNext()) {
                 Statement statement = result.next();
                 Resource subject = statement.getSubject();
@@ -103,8 +119,8 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
 
                 modelMap.get(subject).add(statement);
             }
+            return new ArrayList<>(modelMap.values());
         });
-        return new ArrayList<>(modelMap.values());
     }
 
     @Override
@@ -123,19 +139,23 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
         });
     }
 
-    private void getStatements(Consumer<RepositoryResult<Statement>> consumer) {
-        getStatements(null, null, null, consumer);
+    private Model getAllStatementsAsModel() {
+        return getStatementsAsModel(null, null, null);
     }
 
-    private void getStatements(String subject, String predicate, Object object, Consumer<RepositoryResult<Statement>> consumer) {
-        repository.performQuery(connection -> {
+    private Model getStatementsAsModel(String subject, String predicate, Object object) {
+        return getStatements(subject, predicate, object, result -> Iterations.addAll(result, new LinkedHashModel()));
+    }
+
+    private <T> T getStatements(String subject, String predicate, Object object, Function<RepositoryResult<Statement>, T> consumer) {
+        return repository.performQuery(connection -> {
                     ValueFactory factory = connection.getValueFactory();
                     Resource resourceSubject = subject != null ? factory.createIRI(subject) : null;
                     IRI iriPredicate = predicate != null ? factory.createIRI(predicate) : null;
                     Value valueObject = object != null ? createValue(object, factory) : null;
 
                     try (RepositoryResult<Statement> result = connection.getStatements(resourceSubject, iriPredicate, valueObject)) {
-                        consumer.accept(result);
+                        return consumer.apply(result);
                     }
                 }
         );

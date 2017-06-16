@@ -30,12 +30,12 @@ public class TripleStoreClientAddTest extends TripleStoreClientTest {
     public void testAddCallsMethods() {
         //arrange
         when(connection.getStatements(any(), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
+        initConnectionFunction();
 
         Model picasso = createArtist("Picasso").build();
 
         //act
         client.add(picasso);
-        initConnectionConsumer();
 
         //assert
         verify(connection).add(picasso);
@@ -59,10 +59,11 @@ public class TripleStoreClientAddTest extends TripleStoreClientTest {
 
         //First, ex:Artist, then ex:Lastname, the rest
         when(connection.hasStatement(any(), any(), any(), eq(true))).thenReturn(false, true, false);
+        initConnectionFunction();
 
         //act
         client.update(picasso);
-        initConnectionConsumer();
+
 
         //assert
         ArgumentCaptor<IRI> removeSubject = ArgumentCaptor.forClass(IRI.class);

@@ -70,10 +70,8 @@ public class ConfigurationRepositoryTest {
     }
 
     private Model getModels(TripleStoreRepository repository) {
-        Model result = new LinkedHashModel();
-
-        repository.performQuery(connection -> Iterations.addAll(connection.getStatements(null, null, null), result));
-
-        return result;
+        return repository.performQuery(connection -> {
+            return Iterations.addAll(connection.getStatements(null, null, null), new LinkedHashModel());
+        });
     }
 }

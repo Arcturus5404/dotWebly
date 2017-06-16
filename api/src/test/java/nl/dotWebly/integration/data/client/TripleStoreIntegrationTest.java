@@ -10,6 +10,7 @@ import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -68,8 +69,6 @@ public abstract class TripleStoreIntegrationTest {
 
     // Helper methods
     protected Model getStatementsFromStore() {
-        Model result = new LinkedHashModel();
-        repository.performQuery( connection -> Iterations.addAll(connection.getStatements(null, null, null), result));
-        return result;
+        return repository.performQuery((RepositoryConnection connection) -> Iterations.addAll(connection.getStatements(null, null, null), new LinkedHashModel()));
     }
 }
