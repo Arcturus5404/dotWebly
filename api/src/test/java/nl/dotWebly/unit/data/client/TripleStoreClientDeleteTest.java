@@ -30,10 +30,10 @@ public class TripleStoreClientDeleteTest extends TripleStoreClientTest {
     public void testDeleteCallsMethods() {
         //arrange
         when(connection.getValueFactory()).thenReturn(valueFactory);
-        when(valueFactory.createIRI(eq("subject"))).thenReturn(subjectIri);
+        when(valueFactory.createIRI(eq("subjectMock"))).thenReturn(subjectIri);
 
         //act
-        client.deleteBySubject("subject");
+        client.deleteBySubject("subjectMock");
         initConnectionConsumer();
 
         //assert

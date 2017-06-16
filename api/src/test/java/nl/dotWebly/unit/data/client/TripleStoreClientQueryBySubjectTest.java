@@ -56,11 +56,11 @@ public class TripleStoreClientQueryBySubjectTest extends TripleStoreClientTest {
     public void testQueryBySubjectEmptyResult() {
         //arrange
         when(connection.getValueFactory()).thenReturn(valueFactory);
-        when(valueFactory.createIRI(eq("subject"))).thenReturn(subjectIri);
+        when(valueFactory.createIRI(eq("subjectMock"))).thenReturn(subjectIri);
         when(connection.getStatements(eq(subjectIri), any(), any())).thenReturn(new RepositoryResult<Statement>(new EmptyIteration()));
 
         //act
-        Model model = client.queryBySubject("subject");
+        Model model = client.queryBySubject("subjectMock");
         initConnectionConsumer();
 
         //assert
@@ -72,7 +72,7 @@ public class TripleStoreClientQueryBySubjectTest extends TripleStoreClientTest {
     public void testQueryBySubjectReturnsData() {
         //arrange
         when(connection.getValueFactory()).thenReturn(valueFactory);
-        when(valueFactory.createIRI(eq("subject"))).thenReturn(subjectIri);
+        when(valueFactory.createIRI(eq("subjectMock"))).thenReturn(subjectIri);
 
         Model picasso = createArtist("Picasso").build();
         Model ross = createArtist("Ross").build();
@@ -81,7 +81,7 @@ public class TripleStoreClientQueryBySubjectTest extends TripleStoreClientTest {
         when(connection.getStatements(eq(subjectIri), any(), any())).thenReturn(new RepositoryResult<>(new CollectionIteration<>(statements)));
 
         //act
-        client.queryBySubject("subject");
+        client.queryBySubject("subjectMock");
         initConnectionConsumer();
 
         //assert

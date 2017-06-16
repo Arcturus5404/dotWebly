@@ -29,7 +29,7 @@ public interface TripleStoreClient {
      * Query all triples in the datasource filtered by a combination of subject, predicate or object
      * @return model with all statements from the datasource
      */
-    Model queryBy(String subject, String predicate, String object);
+    <T> Model queryBy(String subject, String predicate, T object);
 
 
     /**

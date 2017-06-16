@@ -2,6 +2,7 @@ package nl.dotWebly.data.client.impl;
 
 import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.repository.TripleStoreRepository;
+import org.apache.commons.lang3.ClassUtils;
 import org.eclipse.rdf4j.common.iteration.Iterations;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
@@ -10,8 +11,9 @@ import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +83,7 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
     }
 
     @Override
-    public Model queryBy(String subject, String predicate, String object) {
+    public <T> Model queryBy(String subject, String predicate, T object) {
         Model model = new LinkedHashModel();
         getStatements(subject, predicate, object, result -> Iterations.addAll(result, model));
         return model;
@@ -125,18 +127,45 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
         getStatements(null, null, null, consumer);
     }
 
-    private void getStatements(String subject, String predicate, String object, Consumer<RepositoryResult<Statement>> consumer) {
+    private void getStatements(String subject, String predicate, Object object, Consumer<RepositoryResult<Statement>> consumer) {
         repository.performQuery(connection -> {
                     ValueFactory factory = connection.getValueFactory();
                     Resource resourceSubject = subject != null ? factory.createIRI(subject) : null;
-                    IRI iriPredicate = subject != null ? factory.createIRI(predicate) : null;
-                    Value valueObject = object != null ? factory.createBNode(object) : null;
+                    IRI iriPredicate = predicate != null ? factory.createIRI(predicate) : null;
+                    Value valueObject = object != null ? createValue(object, factory) : null;
 
                     try (RepositoryResult<Statement> result = connection.getStatements(resourceSubject, iriPredicate, valueObject)) {
                         consumer.accept(result);
                     }
                 }
         );
+    }
+
+    private Value createValue(Object object, ValueFactory factory) {
+        if (object == null) {
+            return null;
+        }
+
+        if (object instanceof String && ((String) object).toLowerCase().startsWith("http://")) {
+            String strObj = (String) object;
+            return factory.createIRI(strObj);
+        } else {
+            return createLiteral(object, factory);
+        }
+    }
+
+    private <T> Value createLiteral(T object, ValueFactory factory) {
+        try {
+            Class argument = ClassUtils.isPrimitiveWrapper(object.getClass()) ? ClassUtils.wrapperToPrimitive(object.getClass()) : object.getClass();
+            Method createMethod = factory.getClass().getMethod("createLiteral", argument);
+            return (Value) createMethod.invoke(factory, object);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("This type was not supported: " + object.getClass(), e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("This type was not supported" + object.getClass(), e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException("This type was not supported" + object.getClass(), e);
+        }
     }
 
     private void getModelBySubject(Model model, LinkedHashModel result, RepositoryConnection c) {
