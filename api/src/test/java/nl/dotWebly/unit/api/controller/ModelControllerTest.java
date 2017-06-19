@@ -106,6 +106,5 @@ public class ModelControllerTest {
 
         //assert
         verify(client).deleteBySubject("myNamespace/subject");
-        ;
     }
 }

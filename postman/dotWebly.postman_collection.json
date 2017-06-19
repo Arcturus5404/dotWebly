@@ -43,6 +43,113 @@
 						"description": ""
 					},
 					"response": []
+				},
+				{
+					"name": "Get information products by Name",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/api/v1/informationproducts/WeergaveTripleQuery?namespace=http://localhost:8080/myStage%23",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"informationproducts",
+								"WeergaveTripleQuery"
+							],
+							"query": [
+								{
+									"key": "namespace",
+									"value": "http://localhost:8080/myStage%23",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Query information products errort",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/api/v1/informationproducts/WeergaveTripleQuery/query?namespace=http://localhost:8080/myStage%23",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"informationproducts",
+								"WeergaveTripleQuery",
+								"query"
+							],
+							"query": [
+								{
+									"key": "namespace",
+									"value": "http://localhost:8080/myStage%23",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Query information products ",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/api/v1/informationproducts/WeergaveTripleQuery/query?namespace=http://localhost:8080/myStage%23&SUBJECT=http://localhost:8080/myStage%23Bla",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"informationproducts",
+								"WeergaveTripleQuery",
+								"query"
+							],
+							"query": [
+								{
+									"key": "namespace",
+									"value": "http://localhost:8080/myStage%23",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "SUBJECT",
+									"value": "http://localhost:8080/myStage%23Bla",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},

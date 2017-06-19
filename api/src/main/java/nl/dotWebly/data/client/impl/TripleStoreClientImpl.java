@@ -84,16 +84,19 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
     @Override
     public boolean ask(String query) {
         return repository.performQuery(c -> {
-            BooleanQuery booleanQuery = c.prepareBooleanQuery(QueryUtils.addDefaultPrefixes(query));
+            String preparedQuery = QueryUtils.addDefaultPrefixes(query);
+            logQuery(preparedQuery);
+            BooleanQuery booleanQuery = c.prepareBooleanQuery(preparedQuery);
             return booleanQuery.evaluate();
         });
     }
 
     @Override
     public List<Map<String, Value>> select(String query) {
-
         return repository.performQuery(c -> {
-            TupleQuery tupleQuery = c.prepareTupleQuery(QueryUtils.addDefaultPrefixes(query));
+            String preparedQuery = QueryUtils.addDefaultPrefixes(query);
+            logQuery(preparedQuery);
+            TupleQuery tupleQuery = c.prepareTupleQuery(preparedQuery);
 
             List<Map<String, Value>> result = new ArrayList<>();
             try(TupleQueryResult queryResult = tupleQuery.evaluate() ){
@@ -115,7 +118,9 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
     public Model construct(String query) {
         return repository.performQuery(c -> {
             Model model = new LinkedHashModel();
-            GraphQuery graphQuery = c.prepareGraphQuery(QueryUtils.addDefaultPrefixes(query));
+            String preparedQuery = QueryUtils.addDefaultPrefixes(query);
+            logQuery(preparedQuery);
+            GraphQuery graphQuery = c.prepareGraphQuery(preparedQuery);
             GraphQueryResult result = graphQuery.evaluate();
 
             Iterations.addAll(result, model);
@@ -205,4 +210,7 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
                 .forEach(s -> Iterations.addAll(s, result));
     }
 
+    private void logQuery(String query) {
+        LOG.info("Preparing following query: \n\n" + query + "\n");
+    }
 }

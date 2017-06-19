@@ -1,7 +1,11 @@
 package nl.dotWebly.unit.data.utils;
 
 import nl.dotWebly.data.utils.QueryUtils;
+import nl.dotWebly.test.categories.Categories;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -9,6 +13,8 @@ import static org.junit.Assert.assertNull;
 /**
  * Created by Rick Fleuren on 6/19/2017.
  */
+@RunWith(MockitoJUnitRunner.class)
+@Category(Categories.UnitTests.class)
 public class QueryUtilsTest {
 
     @Test
@@ -47,6 +53,15 @@ public class QueryUtilsTest {
     }
 
     @Test
+    public void testURIs() {
+        //act
+        String result = QueryUtils.addDefaultPrefixes("http://www.example.org/");
+
+        //assert
+        assertEquals("No result should be added", "http://www.example.org/", result);
+    }
+
+    @Test
     public void testExpandNull() {
         //act
         String result = QueryUtils.expand(null);
@@ -71,6 +86,15 @@ public class QueryUtilsTest {
 
         //assert
         assertEquals("Prefix should be added", "http://bp4mc2.org/elmo/def#String", result);
+    }
+
+    @Test
+    public void testExpandIgnoreUris() {
+        //act
+        String result = QueryUtils.expand("http://example.org/");
+
+        //assert
+        assertEquals("Should be ignored", "http://example.org/", result);
     }
 
     @Test(expected = IllegalArgumentException.class)

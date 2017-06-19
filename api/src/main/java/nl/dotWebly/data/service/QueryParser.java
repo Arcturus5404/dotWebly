@@ -19,7 +19,7 @@ public class QueryParser {
 
         while(matcher.find()) {
             result.add(matcher.group(1));
-        };
+        }
 
         return result.stream().distinct().collect(toList());
     }

@@ -4,8 +4,8 @@ import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
 import nl.dotWebly.data.repository.impl.ConfigurationRepository;
 import nl.dotWebly.data.service.InformationProduct;
 import nl.dotWebly.data.service.InformationProductService;
+import nl.dotWebly.data.service.impl.InformationProductServiceImpl;
 import nl.dotWebly.data.utils.QueryUtils;
-import nl.dotWebly.integration.data.client.configuration.SailMemoryTestConfiguration;
 import nl.dotWebly.integration.data.service.configuration.ServiceConfiguration;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.Model;
@@ -21,11 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
 import java.util.List;
 
-import static nl.dotWebly.data.service.InformationProductService.ELMO_INFORMATIONPRODUCT;
-import static nl.dotWebly.data.service.InformationProductService.ELMO_QUERY;
+import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_INFORMATIONPRODUCT;
+import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_QUERY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -48,7 +47,7 @@ public class InformationProductServiceTest {
     @Test
     public void testQuery() {
         //arrange
-        InformationProductService service = new InformationProductService(tripleStore);
+        InformationProductService service = new InformationProductServiceImpl(tripleStore);
         Model informationProduct = createInformationProduct("name", ELMO_INFORMATIONPRODUCT,"query").build();
         tripleStore.add(informationProduct);
 
@@ -67,7 +66,7 @@ public class InformationProductServiceTest {
     @Test
     public void testEmptyQueryObject() {
         //arrange
-        InformationProductService service = new InformationProductService(tripleStore);
+        InformationProductService service = new InformationProductServiceImpl(tripleStore);
         Model informationProduct = createInformationProduct("name",  ELMO_INFORMATIONPRODUCT,null).build();
         tripleStore.add(informationProduct);
 
@@ -85,7 +84,7 @@ public class InformationProductServiceTest {
     @Test
     public void testIncorrectData() {
         //arrange
-        InformationProductService service = new InformationProductService(tripleStore);
+        InformationProductService service = new InformationProductServiceImpl(tripleStore);
         Model informationProduct = createInformationProduct("name",  "elmo:Othertype", null).build();
         tripleStore.add(informationProduct);
 

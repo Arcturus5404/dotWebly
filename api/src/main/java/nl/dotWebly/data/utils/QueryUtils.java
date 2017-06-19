@@ -3,6 +3,8 @@ package nl.dotWebly.data.utils;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +63,13 @@ public class QueryUtils {
         }
 
         if(value.contains(":")) {
+            //Ignore URI's
+            if(isURI(value)) {
+                return value;
+            }
+
             String prefix = value.substring(0, value.indexOf(":"));
+
             if(!defaults.containsKey(prefix)) {
                 throw new IllegalArgumentException("Cannot resolve namespace: " + prefix);
             } else {
@@ -71,6 +79,16 @@ public class QueryUtils {
             //nothing to expand
             return value;
         }
+    }
+
+    public static boolean isURI(String uri) {
+        final URL url;
+        try {
+            url = new URL(uri);
+        } catch (Exception e1) {
+            return false;
+        }
+        return true;
     }
 
 }
