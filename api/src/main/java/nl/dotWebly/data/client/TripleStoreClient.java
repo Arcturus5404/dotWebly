@@ -1,9 +1,10 @@
 package nl.dotWebly.data.client;
 
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.query.TupleQueryResult;
+import org.eclipse.rdf4j.model.Value;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Rick Fleuren on 6/9/2017.
@@ -37,7 +38,7 @@ public interface TripleStoreClient {
      *
      * @return model with all statements from the datasource
      */
-    TupleQueryResult select(String query);
+    List<Map<String, Value>> select(String query);
 
     /**
      * Query a construct or describe query by means of SPARQL

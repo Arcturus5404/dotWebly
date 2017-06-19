@@ -22,4 +22,5 @@ public class SailMemoryTestConfiguration {
     public SailMemoryTripleStoreClient getTripleStoreClient() {
         return new SailMemoryTripleStoreClient();
     }
+
 }

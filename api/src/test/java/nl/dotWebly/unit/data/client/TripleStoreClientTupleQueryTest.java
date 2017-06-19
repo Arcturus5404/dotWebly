@@ -1,6 +1,7 @@
 package nl.dotWebly.unit.data.client;
 
 import nl.dotWebly.test.categories.Categories;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.junit.Test;
@@ -8,6 +9,9 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,11 +40,10 @@ public class TripleStoreClientTupleQueryTest extends TripleStoreClientTest {
         initConnectionFunction();
 
         //act
-        TupleQueryResult result = client.select("myQuery");
+        List<Map<String, Value>> result = client.select("myQuery");
 
         //assert
         verify(tupleQuery).evaluate();
         assertNotNull("Model should have been returned", result);
-        assertEquals("With same contents", tupleQueryResult, result);
     }
 }

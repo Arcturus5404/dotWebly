@@ -8,8 +8,14 @@ import java.util.List;
 public class InformationProduct {
 
     private final String name;
-    private final String query;
-    private final List<String> parameters;
+    private String query;
+    private List<String> parameters;
+
+    public InformationProduct(String name) {
+        this.name = name;
+        this.setQuery(getQuery());
+        this.setParameters(getParameters());
+    }
 
     public String getName() {
         return name;
@@ -21,10 +27,11 @@ public class InformationProduct {
         return parameters;
     }
 
-    public InformationProduct(String name, String query, List<String> parameters) {
-        this.name = name;
-        this.query = query;
+    public void setParameters(List<String> parameters) {
         this.parameters = parameters;
     }
 
+    public void setQuery(String query) {
+        this.query = query;
+    }
 }

@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 /**
  * Created by Rick Fleuren on 6/12/2017.
  */
@@ -22,7 +24,7 @@ public class InformationProductController {
     }
 
     @RequestMapping
-    public ResponseEntity<InformationProduct[]> getAllProducts() {
+    public ResponseEntity<List<InformationProduct>> getAllProducts() {
         return ResponseEntity.ok(service.getInformationProducts());
     }
 

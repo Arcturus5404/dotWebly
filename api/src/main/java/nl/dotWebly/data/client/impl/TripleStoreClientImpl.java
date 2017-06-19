@@ -3,11 +3,13 @@ package nl.dotWebly.data.client.impl;
 import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.repository.TripleStoreRepository;
 import nl.dotWebly.data.utils.ModelUtils;
+import nl.dotWebly.data.utils.QueryUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.eclipse.rdf4j.common.iteration.Iterations;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.query.*;
+import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.slf4j.Logger;
@@ -82,16 +84,30 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
     @Override
     public boolean ask(String query) {
         return repository.performQuery(c -> {
-            BooleanQuery booleanQuery = c.prepareBooleanQuery(query);
+            BooleanQuery booleanQuery = c.prepareBooleanQuery(QueryUtils.addDefaultPrefixes(query));
             return booleanQuery.evaluate();
         });
     }
 
     @Override
-    public TupleQueryResult select(String query) {
+    public List<Map<String, Value>> select(String query) {
+
         return repository.performQuery(c -> {
-            TupleQuery tupleQuery = c.prepareTupleQuery(query);
-            return tupleQuery.evaluate();
+            TupleQuery tupleQuery = c.prepareTupleQuery(QueryUtils.addDefaultPrefixes(query));
+
+            List<Map<String, Value>> result = new ArrayList<>();
+            try(TupleQueryResult queryResult = tupleQuery.evaluate() ){
+                while(queryResult.hasNext()) {
+                    Map<String, Value> values = new HashMap<>();
+                    BindingSet set = queryResult.next();
+                    for (String name : queryResult.getBindingNames()) {
+                        values.put(name, set.getValue(name));
+                    }
+                    result.add(values);
+                }
+            }
+
+            return result;
         });
     }
 
@@ -99,7 +115,7 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
     public Model construct(String query) {
         return repository.performQuery(c -> {
             Model model = new LinkedHashModel();
-            GraphQuery graphQuery = c.prepareGraphQuery(query);
+            GraphQuery graphQuery = c.prepareGraphQuery(QueryUtils.addDefaultPrefixes(query));
             GraphQueryResult result = graphQuery.evaluate();
 
             Iterations.addAll(result, model);
