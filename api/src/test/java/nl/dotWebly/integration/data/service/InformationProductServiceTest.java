@@ -11,7 +11,6 @@ import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
-import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,11 +21,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
+import java.util.Optional;
 
-import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_INFORMATIONPRODUCT;
+import static junit.framework.TestCase.assertFalse;
+import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_ADAPTER;
+import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_INFORMATION_PRODUCT;
 import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_QUERY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Rick Fleuren on 6/16/2017.
@@ -48,7 +51,7 @@ public class InformationProductServiceTest {
     public void testQuery() {
         //arrange
         InformationProductService service = new InformationProductServiceImpl(tripleStore);
-        Model informationProduct = createInformationProduct("name", ELMO_INFORMATIONPRODUCT,"query").build();
+        Model informationProduct = createInformationProduct("name", ELMO_INFORMATION_PRODUCT,"query").build();
         tripleStore.add(informationProduct);
 
         //act
@@ -67,7 +70,7 @@ public class InformationProductServiceTest {
     public void testEmptyQueryObject() {
         //arrange
         InformationProductService service = new InformationProductServiceImpl(tripleStore);
-        Model informationProduct = createInformationProduct("name",  ELMO_INFORMATIONPRODUCT,null).build();
+        Model informationProduct = createInformationProduct("name", ELMO_INFORMATION_PRODUCT,null).build();
         tripleStore.add(informationProduct);
 
         //act
@@ -95,6 +98,39 @@ public class InformationProductServiceTest {
         assertEquals("Size should be 0, because its not an information product", 0, products.size());
     }
 
+    @Test
+    public void testSingleQuery() {
+        //arrange
+        InformationProductService service = new InformationProductServiceImpl(tripleStore);
+        tripleStore.add(createInformationProduct("name1", ELMO_INFORMATION_PRODUCT,"query").build());
+        tripleStore.add(createInformationProduct("name2", ELMO_INFORMATION_PRODUCT,"query").build());
+
+        //act
+        Optional<InformationProduct> product = service.getInformationProduct("http://example.org/name1");
+
+        //assert
+        assertTrue("Product should be present", product.isPresent());
+        assertEquals("Name should be name", "http://example.org/name1", product.get().getName());
+        assertEquals("Query should be query", "query", product.get().getQuery());
+        assertEquals("Adapter should be adapter", "adapter", product.get().getAdapter());
+        assertEquals("No parameters", 0, product.get().getParameters().size());
+    }
+
+
+    @Test
+    public void testNonFound() {
+        //arrange
+        InformationProductService service = new InformationProductServiceImpl(tripleStore);
+        tripleStore.add(createInformationProduct("name1", ELMO_INFORMATION_PRODUCT,"query").build());
+        tripleStore.add(createInformationProduct("name2", ELMO_INFORMATION_PRODUCT,"query").build());
+
+        //act
+        Optional<InformationProduct> product = service.getInformationProduct("elmo:name_not_found");
+
+        //assert
+        assertFalse("Product should be present", product.isPresent());
+    }
+
     private ModelBuilder createInformationProduct(String name, String type, String query) {
 
         ModelBuilder builder = new ModelBuilder();
@@ -103,7 +139,7 @@ public class InformationProductServiceTest {
                 .setNamespace("ex", "http://example.org/")
                 .subject("ex:" + name)
                 .add(RDF.TYPE, SimpleValueFactory.getInstance().createIRI(QueryUtils.expand(type)))
-                .add(FOAF.FIRST_NAME, "MyName");
+                .add(QueryUtils.expand(ELMO_ADAPTER), "adapter");
 
         if(query != null) {
             builder.add(QueryUtils.expand(ELMO_QUERY), query);

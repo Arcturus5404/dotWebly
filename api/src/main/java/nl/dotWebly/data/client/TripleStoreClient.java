@@ -12,6 +12,12 @@ import java.util.Map;
 public interface TripleStoreClient {
 
     /**
+     * TODO: add support for multiple resources by one client?
+     * @return adapter name supported by the client
+     */
+    String getAdapterName();
+
+    /**
      * Query all triples in the datasource
      *
      * @return model with all statements from the datasource

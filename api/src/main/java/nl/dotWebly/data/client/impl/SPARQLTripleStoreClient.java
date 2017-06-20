@@ -1,6 +1,8 @@
 package nl.dotWebly.data.client.impl;
 
 import nl.dotWebly.data.repository.impl.SPARQLRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,4 +10,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SPARQLTripleStoreClient extends TripleStoreClientImpl<SPARQLRepository> {
+
+    @Autowired
+    public SPARQLTripleStoreClient(@Value("${sparql.init.adapterName}") String adapterName) {
+        super(adapterName);
+    }
 }

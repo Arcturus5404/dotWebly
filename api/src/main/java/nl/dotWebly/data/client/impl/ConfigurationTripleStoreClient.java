@@ -8,4 +8,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ConfigurationTripleStoreClient extends TripleStoreClientImpl<ConfigurationRepository> {
+
+    public ConfigurationTripleStoreClient() {
+        super("Configuration");
+    }
 }

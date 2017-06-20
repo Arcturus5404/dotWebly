@@ -1,5 +1,6 @@
 package nl.dotWebly.unit.service;
 
+import nl.dotWebly.data.client.TripleStoreClient;
 import nl.dotWebly.data.client.impl.TripleStoreClientImpl;
 import nl.dotWebly.data.repository.impl.ConfigurationRepository;
 import nl.dotWebly.data.service.InformationProduct;
@@ -16,8 +17,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +44,15 @@ public class InformationProductServiceQueryTest extends InformationProductServic
     @Mock
     TripleStoreClientImpl<ConfigurationRepository> client;
 
+    @Mock
+    TripleStoreClient firstClient;
+
+    @Mock
+    TripleStoreClient secondClient;
+
+    @Mock
+    TripleStoreClient thirdClient;
+
     @Test(expected = IllegalStateException.class)
     public void productNotFound() {
         //arrange
@@ -53,7 +65,7 @@ public class InformationProductServiceQueryTest extends InformationProductServic
     }
 
     @Test
-    public void returnsModel() {
+    public void returnsModelDefaultClient() {
         //arrange
         InformationProductService service = new InformationProductServiceImpl(client);
         Model model = createInformationProduct("name", "SELECT * WHERE { ?s ?p ?o }").build();
@@ -66,6 +78,29 @@ public class InformationProductServiceQueryTest extends InformationProductServic
 
         //assert
         assertEquals("Result should be the same", constructedResult, result);
+    }
+
+
+    @Test
+    public void returnsModelSpecificAdapter() {
+        //arrange
+        InformationProductService service = new InformationProductServiceImpl(client, Arrays.asList(new TripleStoreClient[] { firstClient, secondClient, thirdClient}));
+
+        Model model = createInformationProduct("name", "SELECT * WHERE { ?s ?p ?o }", "secondAdapter").build();
+
+        Model constructedResult = new LinkedHashModel();
+        when(client.select(any())).thenReturn(convertModel(model));
+
+        when(firstClient.getAdapterName()).thenReturn("firstAdapter");
+        when(secondClient.getAdapterName()).thenReturn("secondAdapter");
+        when(thirdClient.getAdapterName()).thenReturn("thirdAdapter");
+        when(secondClient.construct(any())).thenReturn(constructedResult);
+
+        //act
+        service.queryInformationProduct("name", null);
+
+        //assert
+        verify(secondClient).construct("SELECT * WHERE { ?s ?p ?o }");
     }
 
     @Test

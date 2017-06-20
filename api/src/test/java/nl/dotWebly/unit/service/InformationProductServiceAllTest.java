@@ -5,26 +5,21 @@ import nl.dotWebly.data.repository.impl.ConfigurationRepository;
 import nl.dotWebly.data.service.InformationProduct;
 import nl.dotWebly.data.service.InformationProductService;
 import nl.dotWebly.data.service.impl.InformationProductServiceImpl;
-import nl.dotWebly.data.utils.QueryUtils;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
-import org.eclipse.rdf4j.model.util.ModelBuilder;
-import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
-import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.*;
+import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_INFORMATION_PRODUCT;
+import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.SELECT_ALL_QUERY;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -59,7 +54,7 @@ public class InformationProductServiceAllTest extends InformationProductServiceB
         //arrange
         InformationProductService service = new InformationProductServiceImpl(client);
 
-        String query = String.format(SELECT_ALL_QUERY, ELMO_INFORMATIONPRODUCT);
+        String query = String.format(SELECT_ALL_QUERY, ELMO_INFORMATION_PRODUCT);
         when(client.select(eq(query))).thenReturn(convertModel(new LinkedHashModel()));
 
         //act
@@ -85,6 +80,7 @@ public class InformationProductServiceAllTest extends InformationProductServiceB
         InformationProduct product = products.get(0);
         assertEquals("Name should be name", "http://example.org/name", product.getName());
         assertEquals("Query should be query", "query", product.getQuery());
+        assertEquals("Adapter should be adapter", "adapter", product.getAdapter());
         assertEquals("No parameters", 0, product.getParameters().size());
     }
 

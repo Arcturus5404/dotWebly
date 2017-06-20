@@ -7,6 +7,7 @@ import nl.dotWebly.data.service.InformationProduct;
 import nl.dotWebly.data.service.InformationProductService;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,19 +27,25 @@ import static nl.dotWebly.data.utils.QueryUtils.expand;
 @Service
 public class InformationProductServiceImpl implements InformationProductService {
 
-    private final TripleStoreClientImpl<ConfigurationRepository> client;
-//    private final List<TripleStoreClient> clients;
+    private final TripleStoreClientImpl<ConfigurationRepository> configurationClient;
 
-    public static final String ELMO_INFORMATIONPRODUCT = "elmo:InformationProduct";
+    private List<TripleStoreClient> clients;
+
+    public static final String ELMO_INFORMATION_PRODUCT = "elmo:InformationProduct";
     public static final String ELMO_QUERY = "elmo:query";
+    public static final String ELMO_ADAPTER = "elmo:adapter";
 
     public static final String SELECT_ALL_QUERY = "SELECT ?s ?p ?o WHERE { ?s rdf:type %1$s. ?s ?p ?o }";
-    public static final String SELECT_ONE_QUERY = "SELECT ?s ?p ?o WHERE { <%1$s> rdf:type %2$s. ?s ?p ?o }";
+    public static final String SELECT_ONE_QUERY = "SELECT ?p ?o WHERE { <%1$s> rdf:type %2$s. <%1$s> ?p ?o }";
+
+    public InformationProductServiceImpl(TripleStoreClientImpl<ConfigurationRepository> configurationClient) {
+        this.configurationClient = configurationClient;
+    }
 
     @Autowired
-    public InformationProductServiceImpl(TripleStoreClientImpl<ConfigurationRepository> client) {
-        this.client = client;
-//        this.clients = clients;
+    public InformationProductServiceImpl(TripleStoreClientImpl<ConfigurationRepository> configurationClient, List<TripleStoreClient> clients) {
+        this.configurationClient = configurationClient;
+        this.clients = clients;
     }
 
     /**
@@ -48,8 +55,8 @@ public class InformationProductServiceImpl implements InformationProductService 
      */
     @Override
     public List<InformationProduct> getInformationProducts() {
-        String query = String.format(SELECT_ALL_QUERY, ELMO_INFORMATIONPRODUCT);
-        List<Map<String, Value>> result = client.select(query);
+        String query = String.format(SELECT_ALL_QUERY, ELMO_INFORMATION_PRODUCT);
+        List<Map<String, Value>> result = configurationClient.select(query);
 
         return convertToInformationProducts(result);
     }
@@ -61,8 +68,12 @@ public class InformationProductServiceImpl implements InformationProductService 
      */
     @Override
     public Optional<InformationProduct> getInformationProduct(String name) {
-        String query = String.format(SELECT_ONE_QUERY, expand(name), ELMO_INFORMATIONPRODUCT);
-        List<Map<String, Value>> result = client.select(query);
+        String subject = expand(name);
+        String query = String.format(SELECT_ONE_QUERY, subject, ELMO_INFORMATION_PRODUCT);
+        List<Map<String, Value>> result = configurationClient.select(query);
+
+        //as we didn't query on the subject, because its already known, add it to the result set, so that we can use the same parse method
+        result.forEach(m -> m.put("s", SimpleValueFactory.getInstance().createLiteral(subject)));
 
         List<InformationProduct> informationProducts = convertToInformationProducts(result);
 
@@ -87,7 +98,20 @@ public class InformationProductServiceImpl implements InformationProductService 
             throw new IllegalStateException("Not every parameter is filled: " + query);
         }
 
-        return client.construct(query);
+        //default datasource
+        if(product.getAdapter() == null) {
+            return configurationClient.construct(query);
+        } else {
+            if(clients == null) {
+                return configurationClient.construct(query);
+            }
+
+            TripleStoreClient resultingClient = clients.stream()
+                    .filter(s -> product.getAdapter().equals(s.getAdapterName()))
+                    .findFirst().orElse(configurationClient);
+
+            return resultingClient.construct(query);
+        }
     }
 
     private String buildQuery(String template, Map<String, String> parameters) {
@@ -105,7 +129,7 @@ public class InformationProductServiceImpl implements InformationProductService 
     private List<InformationProduct> convertToInformationProducts(List<Map<String, Value>> queryResult) {
         Map<String, InformationProduct> result = new HashMap<>();
 
-        filterBy(queryResult, "o", ELMO_INFORMATIONPRODUCT, i -> {
+        filterBy(queryResult, "o", ELMO_INFORMATION_PRODUCT, i -> {
             String name = i.get("s").stringValue();
             result.put(name, new InformationProduct(name));
         });
@@ -122,6 +146,13 @@ public class InformationProductServiceImpl implements InformationProductService 
 
             List<String> parameters = getParametersFromQuery(query);
             informationProduct.setParameters(parameters);
+        });
+
+
+        filterBy(queryResult, "p", ELMO_ADAPTER, i -> {
+            String name = i.get("s").stringValue();
+            String adapter = i.get("o").stringValue();
+            result.get(name).setAdapter(adapter);
         });
 
         return result.values().stream().collect(toList());

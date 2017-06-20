@@ -73,7 +73,7 @@ public class InformationProductControllerTest {
         init(controller);
 
         //act
-        ResponseEntity<InformationProduct> result = controller.getInformationProduct("name", "namespace");
+        ResponseEntity<InformationProduct> result = controller.getInformationProduct("name", "namespace/");
 
         //assert
         assertEquals("Models should be the same", informationProduct.get(), result.getBody());

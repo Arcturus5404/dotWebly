@@ -26,7 +26,7 @@ import java.util.List;
 @PropertySource({
         "settings.properties",
         "repository.sail.properties",
-        "repository.file.properties",
+        "repository.configuratie.properties",
         "repository.sparql.properties",
         "repository.virtuoso.properties"})
 public class ApiConfiguration extends WebMvcConfigurerAdapter {

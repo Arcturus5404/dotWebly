@@ -9,7 +9,6 @@ import org.eclipse.rdf4j.common.iteration.Iterations;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.query.*;
-import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.slf4j.Logger;
@@ -31,8 +30,18 @@ public abstract class TripleStoreClientImpl<R extends TripleStoreRepository> imp
 
     private static final Logger LOG = LoggerFactory.getLogger(TripleStoreClientImpl.class);
 
+    private String adapterName;
+
     @Autowired
     private R repository;
+
+    protected TripleStoreClientImpl(String adapterName) {
+        this.adapterName = adapterName;
+    }
+
+    public String getAdapterName() {
+        return adapterName;
+    }
 
     public Model add(Model model) {
         return repository.performQuery(c -> {

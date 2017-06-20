@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
-import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_INFORMATIONPRODUCT;
+import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_ADAPTER;
+import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_INFORMATION_PRODUCT;
 import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_QUERY;
 
 /**
@@ -30,12 +31,17 @@ public class InformationProductServiceBase {
     }
 
     protected ModelBuilder createInformationProduct(String name, String query) {
+        return createInformationProduct(name, query, "adapter");
+    }
+
+    protected ModelBuilder createInformationProduct(String name, String query, String adapter) {
         ModelBuilder builder = new ModelBuilder();
 
         return builder
                 .setNamespace("ex", "http://example.org/")
                 .subject("ex:" + name)
-                .add(RDF.TYPE, QueryUtils.expand(ELMO_INFORMATIONPRODUCT))
+                .add(RDF.TYPE, QueryUtils.expand(ELMO_INFORMATION_PRODUCT))
+                .add(QueryUtils.expand(ELMO_ADAPTER), adapter)
                 .add(QueryUtils.expand(ELMO_QUERY), query);
     }
 }

@@ -17,7 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertFalse;
-import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_INFORMATIONPRODUCT;
+import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.ELMO_INFORMATION_PRODUCT;
 import static nl.dotWebly.data.service.impl.InformationProductServiceImpl.SELECT_ONE_QUERY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -55,7 +55,7 @@ public class InformationProductServiceSingleTest extends InformationProductServi
         //arrange
         InformationProductService service = new InformationProductServiceImpl(client);
 
-        String query = String.format(SELECT_ONE_QUERY, "name", ELMO_INFORMATIONPRODUCT);
+        String query = String.format(SELECT_ONE_QUERY, "name", ELMO_INFORMATION_PRODUCT);
         when(client.select(eq(query))).thenReturn(convertModel(new LinkedHashModel()));
 
         //act
@@ -73,7 +73,7 @@ public class InformationProductServiceSingleTest extends InformationProductServi
         when(client.select(any())).thenReturn(convertModel(informationProduct));
 
         //act
-        Optional<InformationProduct> result = service.getInformationProduct("name");
+        Optional<InformationProduct> result = service.getInformationProduct("http://example.org/name");
 
         //assert
         assertTrue("Should be present", result.isPresent());

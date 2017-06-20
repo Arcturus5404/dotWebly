@@ -30,8 +30,8 @@ public class ConfigurationRepository extends Rdf4JRepository {
     @Autowired
     public ConfigurationRepository(ResourceLoader resourceLoader,
                                    @Value("${default.namespace}") String defaultNamespace,
-                                   @Value("${file.init.foldername}") String repositoryName,
-                                   @Value("${file.init.files}") String... files)
+                                   @Value("${config.init.foldername}") String repositoryName,
+                                   @Value("${config.init.files}") String... files)
             throws IOException {
         MemoryStore memoryStore = new MemoryStore(new File(repositoryName));
 

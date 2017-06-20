@@ -10,6 +10,7 @@ public class InformationProduct {
     private final String name;
     private String query;
     private List<String> parameters;
+    private String adapter;
 
     public InformationProduct(String name) {
         this.name = name;
@@ -23,6 +24,9 @@ public class InformationProduct {
     public String getQuery() {
         return query;
     }
+    public String getAdapter() {
+        return adapter;
+    }
     public List<String> getParameters() {
         return parameters;
     }
@@ -33,5 +37,9 @@ public class InformationProduct {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public void setAdapter(String adapter) {
+        this.adapter = adapter;
     }
 }
