@@ -36,9 +36,6 @@ public class RdfMessageConverterReadTest {
     HttpInputMessage message;
 
     @Mock
-    InputStream inputStream;
-
-    @Mock
     HttpHeaders headers;
 
     @Test

@@ -47,10 +47,10 @@ public class ApiConfiguration extends WebMvcConfigurerAdapter {
         configurer
                 .defaultContentType(MediaType.valueOf(RDFFormat.JSONLD.getDefaultMIMEType()))
                 .parameterName("format")
-                .favorParameter(false)
                 .favorPathExtension(true)
+                .favorParameter(true)
                 .ignoreUnknownPathExtensions(false)
-                .ignoreAcceptHeader(true)
+                .ignoreAcceptHeader(false)
                 .useJaf(true);
 
         for (String extension : converters.keySet()) {
