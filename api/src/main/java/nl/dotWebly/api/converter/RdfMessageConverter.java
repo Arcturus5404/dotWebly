@@ -44,7 +44,7 @@ public class RdfMessageConverter extends AbstractHttpMessageConverter<Model> {
     @Override
     protected Model readInternal(Class<? extends Model> aClass, HttpInputMessage httpInputMessage) throws IOException, HttpMessageNotReadableException {
         List<String> namespaces = httpInputMessage.getHeaders().get("namespace");
-        String baseUri = namespaces == null ? "" : namespaces.get(0);
+        String baseUri = namespaces == null || namespaces.size() == 0 ? "" : namespaces.get(0);
         return Rio.parse(httpInputMessage.getBody(), baseUri, format);
     }
 
