@@ -3,6 +3,7 @@ package nl.dotWebly.integration.data.client;
 import org.eclipse.rdf4j.model.Model;
 import org.junit.Test;
 
+import static nl.dotWebly.utils.TestUtils.createArtist;
 import static org.junit.Assert.assertEquals;
 
 /**

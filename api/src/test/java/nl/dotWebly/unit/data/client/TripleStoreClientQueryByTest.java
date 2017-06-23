@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.function.BiConsumer;
 
+import static nl.dotWebly.utils.TestUtils.createArtist;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -166,16 +167,5 @@ public class TripleStoreClientQueryByTest extends TripleStoreClientTest {
 
         //assert
         verify(connection).getStatements(null, null, subjectMock);
-    }
-
-
-    private ModelBuilder createArtist(String artistName) {
-        ModelBuilder builder = new ModelBuilder();
-
-        return builder
-                .setNamespace("ex", "http://example.org/")
-                .subject("ex:" + artistName)
-                .add(RDF.TYPE, "ex:Artist")
-                .add(FOAF.LAST_NAME, artistName);
     }
 }

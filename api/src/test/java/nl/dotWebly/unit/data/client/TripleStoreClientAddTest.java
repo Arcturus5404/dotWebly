@@ -12,6 +12,7 @@ import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import static nl.dotWebly.utils.TestUtils.createArtist;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
@@ -78,15 +79,5 @@ public class TripleStoreClientAddTest extends TripleStoreClientTest {
         ArgumentCaptor<IRI> getSubject = ArgumentCaptor.forClass(IRI.class);
         verify(connection).getStatements(getSubject.capture(), eq(null), eq(null));
         assertEquals("IRI should be http://example.org/Picasso", "http://example.org/Picasso", getSubject.getValue().toString());
-    }
-
-    private ModelBuilder createArtist(String artistName) {
-        ModelBuilder builder = new ModelBuilder();
-
-        return builder
-                .setNamespace("ex", "http://example.org/")
-                .subject("ex:" + artistName)
-                .add(RDF.TYPE, "ex:Artist")
-                .add(FOAF.LAST_NAME, artistName);
     }
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static nl.dotWebly.utils.TestUtils.createArtist;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -83,13 +84,4 @@ public class TripleStoreClientQueryBySubjectTest extends TripleStoreClientTest {
         verify(connection).getStatements(subjectIri, null, null);
     }
 
-    private ModelBuilder createArtist(String artistName) {
-        ModelBuilder builder = new ModelBuilder();
-
-        return builder
-                .setNamespace("ex", "http://example.org/")
-                .subject("ex:" + artistName)
-                .add(RDF.TYPE, "ex:Artist")
-                .add(FOAF.LAST_NAME, artistName);
-    }
 }

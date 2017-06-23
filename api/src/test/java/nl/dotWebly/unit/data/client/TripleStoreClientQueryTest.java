@@ -14,6 +14,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static nl.dotWebly.utils.TestUtils.createArtist;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -66,15 +67,5 @@ public class TripleStoreClientQueryTest extends TripleStoreClientTest {
 
         //assert
         verify(connection).getStatements(null, null, null);
-    }
-
-    private ModelBuilder createArtist(String artistName) {
-        ModelBuilder builder = new ModelBuilder();
-
-        return builder
-                .setNamespace("ex", "http://example.org/")
-                .subject("ex:" + artistName)
-                .add(RDF.TYPE, "ex:Artist")
-                .add(FOAF.LAST_NAME, artistName);
     }
 }
