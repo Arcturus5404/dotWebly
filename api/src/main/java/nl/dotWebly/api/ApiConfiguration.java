@@ -1,13 +1,17 @@
 package nl.dotWebly.api;
 
-import nl.dotWebly.api.converter.RdfCsvConverter;
-import nl.dotWebly.api.converter.RdfHtmlConverter;
-import nl.dotWebly.api.converter.RdfRioMessageConverter;
+import nl.dotWebly.api.converter.*;
+import nl.dotWebly.api.converter.office.RdfExcelConverter;
+import nl.dotWebly.api.converter.office.RdfExcelOpenXmlConverter;
+import nl.dotWebly.api.converter.office.RdfWordConverter;
+import nl.dotWebly.api.converter.office.RdfWordOpenXmlConverter;
 import org.eclipse.rdf4j.rio.RDFFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -15,7 +19,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +41,7 @@ public class ApiConfiguration extends WebMvcConfigurerAdapter {
 
     static {
         converters = new HashMap<>();
-        //TODO: html, default xml rules, sparql, json rules, txt, csv, xlsx, docx, pdf, xmi, graphml, yed
+        //TODO: default xml rules, sparql, json rules, txt,  pdf, xmi, graphml, yed
         //see: https://github.com/architolk/Linked-Data-Theatre/blob/master/docs/Content-negotiation.md
         converters.put("html", new RdfHtmlConverter());
         converters.put("json", new RdfRioMessageConverter(RDFFormat.JSONLD));
@@ -49,6 +52,12 @@ public class ApiConfiguration extends WebMvcConfigurerAdapter {
         converters.put("rdf-json", new RdfRioMessageConverter(RDFFormat.RDFJSON));
         converters.put("n-triple", new RdfRioMessageConverter(RDFFormat.NTRIPLES));
         converters.put("csv", new RdfCsvConverter());
+
+        //office
+        converters.put("xls", new RdfExcelConverter());
+        converters.put("xlsx", new RdfExcelOpenXmlConverter());
+        converters.put("doc", new RdfWordConverter());
+        converters.put("docx", new RdfWordOpenXmlConverter());
     }
 
     @Override
@@ -79,5 +88,14 @@ public class ApiConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    @Autowired
+    public void addResourceLoader(ResourceLoader loader) {
+        for (HttpMessageConverter converter : converters.values()) {
+            if(converter instanceof ResourceConverter) {
+                ((ResourceConverter)converter).setResourceLoader(loader);
+            }
+        }
     }
 }

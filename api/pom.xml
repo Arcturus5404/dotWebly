@@ -29,6 +29,7 @@
 
     <properties>
         <rdf4j.version>2.2.1</rdf4j.version>
+        <apache.poi.version>3.16</apache.poi.version>
     </properties>
 
     <dependencies>
@@ -108,6 +109,22 @@
             <artifactId>opencsv</artifactId>
             <version>3.9</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${apache.poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${apache.poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>${apache.poi.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.virtuoso</groupId>
@@ -125,7 +142,6 @@
         </dependency>
 
         <!-- Test frameworks -->
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -143,7 +159,6 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-
 
     </dependencies>
 
