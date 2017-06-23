@@ -1,6 +1,6 @@
 package nl.dotWebly.api;
 
-import nl.dotWebly.api.converter.RdfMessageConverter;
+import nl.dotWebly.api.converter.RdfRioMessageConverter;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,15 +31,20 @@ import java.util.List;
         "repository.virtuoso.properties"})
 public class ApiConfiguration extends WebMvcConfigurerAdapter {
 
-    private static HashMap<String, RdfMessageConverter> converters;
+    private static HashMap<String, RdfRioMessageConverter> converters;
 
     static {
         converters = new HashMap<>();
-        converters.put("json-ld", new RdfMessageConverter(RDFFormat.JSONLD));
-        converters.put("xml", new RdfMessageConverter(RDFFormat.RDFXML));
-        converters.put("ttl", new RdfMessageConverter(RDFFormat.TURTLE));
-        converters.put("rdf-json", new RdfMessageConverter(RDFFormat.RDFJSON));
-        converters.put("n-triple", new RdfMessageConverter(RDFFormat.NTRIPLES));
+        //TODO: html, default xml rules, sparql, json rules, txt, csv, xlsx, docx, pdf, xmi, graphml, yed
+        //see: https://github.com/architolk/Linked-Data-Theatre/blob/master/docs/Content-negotiation.md
+        converters.put("html", new RdfRioMessageConverter(RDFFormat.JSONLD));
+        converters.put("json", new RdfRioMessageConverter(RDFFormat.JSONLD));
+        converters.put("jsonld", new RdfRioMessageConverter(RDFFormat.JSONLD));
+        converters.put("xml", new RdfRioMessageConverter(RDFFormat.RDFXML));
+        converters.put("rdf", new RdfRioMessageConverter(RDFFormat.RDFXML));
+        converters.put("ttl", new RdfRioMessageConverter(RDFFormat.TURTLE));
+        converters.put("rdf-json", new RdfRioMessageConverter(RDFFormat.RDFJSON));
+        converters.put("n-triple", new RdfRioMessageConverter(RDFFormat.NTRIPLES));
     }
 
     @Override

@@ -1,9 +1,8 @@
 package nl.dotWebly.unit.api.converter;
 
-import nl.dotWebly.api.converter.RdfMessageConverter;
+import nl.dotWebly.api.converter.RdfRioMessageConverter;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.vocabulary.FOAF;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
@@ -16,8 +15,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
-import org.springframework.http.HttpOutputMessage;
-import org.springframework.http.MediaType;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -30,7 +27,7 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class RdfMessageConverterReadTest {
+public class RdfRioMessageConverterReadTest {
 
     @Mock
     HttpInputMessage message;
@@ -41,7 +38,7 @@ public class RdfMessageConverterReadTest {
     @Test
     public void testCanReadModels() throws IOException {
         //arrange
-        RdfMessageConverter converter = new RdfMessageConverter(RDFFormat.JSONLD);
+        RdfRioMessageConverter converter = new RdfRioMessageConverter(RDFFormat.JSONLD);
 
         Model picasso = create("Picasso", "Pablo", "Artist").build();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -61,7 +58,7 @@ public class RdfMessageConverterReadTest {
     @Test
     public void testUsesInputstream() throws IOException {
         //arrange
-        RdfMessageConverter converter = new RdfMessageConverter(RDFFormat.JSONLD);
+        RdfRioMessageConverter converter = new RdfRioMessageConverter(RDFFormat.JSONLD);
 
         Model picasso = create("Picasso", "Pablo", "Artist").build();
         ByteArrayOutputStream output = new ByteArrayOutputStream();

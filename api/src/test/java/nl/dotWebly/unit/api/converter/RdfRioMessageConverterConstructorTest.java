@@ -1,8 +1,7 @@
 package nl.dotWebly.unit.api.converter;
 
-import nl.dotWebly.api.converter.RdfMessageConverter;
+import nl.dotWebly.api.converter.RdfRioMessageConverter;
 import nl.dotWebly.test.categories.Categories;
-import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -21,12 +20,12 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class RdfMessageConverterConstructorTest {
+public class RdfRioMessageConverterConstructorTest {
 
     @Test
     public void testAddsMediaTypes() {
         //arrange
-        RdfMessageConverter converter = new RdfMessageConverter(RDFFormat.JSONLD);
+        RdfRioMessageConverter converter = new RdfRioMessageConverter(RDFFormat.JSONLD);
 
         //act
         List<MediaType> mediaTypes = converter.getSupportedMediaTypes();
@@ -39,7 +38,7 @@ public class RdfMessageConverterConstructorTest {
     @Test
     public void testIgnoresNamespaces() {
         //arrange
-        RdfMessageConverter converter = new RdfMessageConverter(RDFFormat.RDFXML);
+        RdfRioMessageConverter converter = new RdfRioMessageConverter(RDFFormat.RDFXML);
 
         //act
         List<MediaType> mediaTypes = converter.getSupportedMediaTypes();

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Rick Fleuren on 6/12/2017.
  */
-public class RdfMessageConverter extends AbstractHttpMessageConverter<Model> {
+public class RdfRioMessageConverter extends AbstractHttpMessageConverter<Model> {
 
     private RDFFormat format;
 
@@ -27,7 +27,7 @@ public class RdfMessageConverter extends AbstractHttpMessageConverter<Model> {
      *
      * @param format The format to be supported by the converter
      */
-    public RdfMessageConverter(RDFFormat format) {
+    public RdfRioMessageConverter(RDFFormat format) {
         super(format.getMIMETypes().stream()
                 .filter(m -> !"application/xml".equals(m))
                 .filter(m -> !"text/xml".equals(m))

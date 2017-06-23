@@ -1,6 +1,6 @@
 package nl.dotWebly.unit.api.converter;
 
-import nl.dotWebly.api.converter.RdfMessageConverter;
+import nl.dotWebly.api.converter.RdfRioMessageConverter;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.rio.RDFFormat;
@@ -18,12 +18,12 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class RdfMessageConverterCanReadTest {
+public class RdfRioMessageConverterCanReadTest {
 
     @Test
     public void testCanReadModels() {
         //arrange
-        RdfMessageConverter converter = new RdfMessageConverter(RDFFormat.JSONLD);
+        RdfRioMessageConverter converter = new RdfRioMessageConverter(RDFFormat.JSONLD);
 
         //act
         boolean canRead = converter.canRead(LinkedHashModel.class, MediaType.valueOf("application/ld+json"));
@@ -35,7 +35,7 @@ public class RdfMessageConverterCanReadTest {
     @Test
     public void testCantReadUnknownMediatypes() {
         //arrange
-        RdfMessageConverter converter = new RdfMessageConverter(RDFFormat.JSONLD);
+        RdfRioMessageConverter converter = new RdfRioMessageConverter(RDFFormat.JSONLD);
 
         //act
         boolean canRead = converter.canRead(LinkedHashModel.class, MediaType.valueOf("application/xml"));
@@ -46,7 +46,7 @@ public class RdfMessageConverterCanReadTest {
     @Test
     public void testCantReadUnknownClass() {
         //arrange
-        RdfMessageConverter converter = new RdfMessageConverter(RDFFormat.JSONLD);
+        RdfRioMessageConverter converter = new RdfRioMessageConverter(RDFFormat.JSONLD);
 
         //act
         boolean canRead = converter.canRead(Object.class, MediaType.valueOf("application/ld+json"));
