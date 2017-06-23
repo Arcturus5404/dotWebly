@@ -1,6 +1,6 @@
 package nl.dotWebly.unit.api.converter;
 
-import nl.dotWebly.api.converter.RdfHtmlConverter;
+import nl.dotWebly.api.converter.RdfCsvConverter;
 import nl.dotWebly.test.categories.Categories;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Category(Categories.UnitTests.class)
-public class RdfHtmlConverterTest {
+public class RdfCsvConverterTest {
 
     @Mock
     HttpOutputMessage message;
@@ -38,7 +38,7 @@ public class RdfHtmlConverterTest {
     @Test
     public void testCantReadOtherMediaType() {
         //arrange
-        RdfHtmlConverter converter = new RdfHtmlConverter();
+        RdfCsvConverter converter = new RdfCsvConverter();
 
         //act
         boolean canRead = converter.canRead(LinkedHashModel.class, MediaType.APPLICATION_RSS_XML);
@@ -50,10 +50,10 @@ public class RdfHtmlConverterTest {
     @Test
     public void testCantRead() {
         //arrange
-        RdfHtmlConverter converter = new RdfHtmlConverter();
+        RdfCsvConverter converter = new RdfCsvConverter();
 
         //act
-        boolean canRead = converter.canRead(LinkedHashModel.class, MediaType.APPLICATION_XHTML_XML);
+        boolean canRead = converter.canRead(LinkedHashModel.class, MediaType.valueOf("text/csv"));
 
         //assert
         assertFalse("It shouldn't be able to read models", canRead);
@@ -62,10 +62,10 @@ public class RdfHtmlConverterTest {
     @Test
     public void testCanWrite() {
         //arrange
-        RdfHtmlConverter converter = new RdfHtmlConverter();
+        RdfCsvConverter converter = new RdfCsvConverter();
 
         //act
-        boolean canWrite = converter.canWrite(LinkedHashModel.class, MediaType.APPLICATION_XHTML_XML);
+        boolean canWrite = converter.canWrite(LinkedHashModel.class, MediaType.valueOf("text/csv"));
 
         //assert
         assertTrue("It should be able to write models", canWrite);
@@ -74,7 +74,7 @@ public class RdfHtmlConverterTest {
     @Test
     public void testCanWriteOtherMediaType() {
         //arrange
-        RdfHtmlConverter converter = new RdfHtmlConverter();
+        RdfCsvConverter converter = new RdfCsvConverter();
 
         //act
         boolean canWrite = converter.canWrite(LinkedHashModel.class, MediaType.APPLICATION_RSS_XML);
@@ -86,7 +86,7 @@ public class RdfHtmlConverterTest {
     @Test
     public void testWrite() throws IOException {
         //arrange
-        RdfHtmlConverter converter = new RdfHtmlConverter();
+        RdfCsvConverter converter = new RdfCsvConverter();
         Model model = new LinkedHashModel();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -94,16 +94,16 @@ public class RdfHtmlConverterTest {
         when(message.getHeaders()).thenReturn(headers);
 
         //act
-        converter.write(model, MediaType.APPLICATION_XHTML_XML, message);
+        converter.write(model, MediaType.valueOf("text/csv"), message);
 
         //assert
         verify(message, times(2)).getBody();
    }
 
     @Test
-    public void testHtmlTags() throws IOException {
+    public void testCsvTags() throws IOException {
         //arrange
-        RdfHtmlConverter converter = new RdfHtmlConverter();
+        RdfCsvConverter converter = new RdfCsvConverter();
         Model model = createArtist("Picasso").build();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -111,18 +111,12 @@ public class RdfHtmlConverterTest {
         when(message.getHeaders()).thenReturn(headers);
 
         //act
-        converter.write(model, MediaType.APPLICATION_XHTML_XML, message);
+        converter.write(model, MediaType.valueOf("text/csv"), message);
 
         //assert
-        String html = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
-
-        assertTrue("Should contain html tag", html.contains("<html"));
-        assertTrue("Should contain body tag", html.contains("<body"));
-        assertTrue("Should contain table tag", html.contains("<table"));
-        assertTrue("Should contain Subject header", html.contains("Subject"));
-        assertTrue("Should contain Predicate header", html.contains("Predicate"));
-        assertTrue("Should contain Object header", html.contains("Object"));
-        assertTrue("Should contain Picasso data", html.contains("Picasso"));
+        String csv = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
+        assertTrue("Should contain Picasso data", csv.contains("Picasso"));
+        assertTrue("Should contain Artist data", csv.contains("Artist"));
     }
 
 }

@@ -1,5 +1,6 @@
 package nl.dotWebly.api;
 
+import nl.dotWebly.api.converter.RdfCsvConverter;
 import nl.dotWebly.api.converter.RdfHtmlConverter;
 import nl.dotWebly.api.converter.RdfRioMessageConverter;
 import org.eclipse.rdf4j.rio.RDFFormat;
@@ -47,6 +48,7 @@ public class ApiConfiguration extends WebMvcConfigurerAdapter {
         converters.put("ttl", new RdfRioMessageConverter(RDFFormat.TURTLE));
         converters.put("rdf-json", new RdfRioMessageConverter(RDFFormat.RDFJSON));
         converters.put("n-triple", new RdfRioMessageConverter(RDFFormat.NTRIPLES));
+        converters.put("csv", new RdfCsvConverter());
     }
 
     @Override
