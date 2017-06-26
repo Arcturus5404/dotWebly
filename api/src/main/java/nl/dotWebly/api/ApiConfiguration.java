@@ -51,6 +51,8 @@ public class ApiConfiguration extends WebMvcConfigurerAdapter {
         converters.put("ttl", new RdfRioMessageConverter(RDFFormat.TURTLE));
         converters.put("rdf-json", new RdfRioMessageConverter(RDFFormat.RDFJSON));
         converters.put("n-triple", new RdfRioMessageConverter(RDFFormat.NTRIPLES));
+
+        //write only converters
         converters.put("csv", new RdfCsvConverter());
 
         //office
