@@ -55,6 +55,7 @@ public class ApiConfiguration extends WebMvcConfigurerAdapter {
         //write only converters
         converters.put("csv", new RdfCsvConverter());
         converters.put("pdf", new RdfPdfConverter());
+        converters.put("graphml", new RdfGraphmlConverter());
 
         //office
         converters.put("xls", new RdfExcelConverter());
