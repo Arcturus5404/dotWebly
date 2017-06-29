@@ -1,25 +1,7 @@
 machine:
     java:
         version: openjdk8
-jobs:
-  build:
-    
-    steps:
-
-      - checkout
-
-      - restore_cache:
-          key: nl.dotWebly-{{ checksum "pom.xml" }}
-      
-      - run: mvn dependency:go-offline
-      
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: nl.dotWebly-{{ checksum "pom.xml" }}
-      
-      - run: mvn package
-      
-      - store_test_results:
-          path: target/surefire-reports
-      
+test:
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
