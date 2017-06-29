@@ -132,7 +132,7 @@ public class RdfWordConverterTest {
    }
 
     @Test
-	@Ignore
+
     public void testWordTags() throws IOException {
         //arrange
         RdfWordConverter converter = new RdfWordConverter();
