@@ -1,6 +1,3 @@
 machine:
     java:
         version: openjdk8
-test:
-    post:
-        - mvn clean install
