@@ -10,6 +10,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -56,6 +57,7 @@ public class RdfWordConverterTest {
     }
 
     @Test
+	@Ignore
     public void testCantRead() {
         //arrange
         RdfWordConverter converter = new RdfWordConverter();
@@ -68,6 +70,7 @@ public class RdfWordConverterTest {
     }
 
     @Test
+	@Ignore
     public void testCanWrite() {
         //arrange
         RdfWordConverter converter = new RdfWordConverter();
@@ -80,6 +83,7 @@ public class RdfWordConverterTest {
     }
 
     @Test
+	@Ignore
     public void testCanWriteOtherMediaType() {
         //arrange
         RdfWordConverter converter = new RdfWordConverter();
@@ -92,6 +96,7 @@ public class RdfWordConverterTest {
     }
 
     @Test
+	@Ignore
     public void testWrite() throws IOException {
         //arrange
         RdfWordConverter converter = new RdfWordConverter();
@@ -109,6 +114,7 @@ public class RdfWordConverterTest {
    }
 
     @Test
+	@Ignore
     public void testAddsHeader() throws IOException {
         //arrange
         RdfWordConverter converter = new RdfWordConverter();
@@ -126,6 +132,7 @@ public class RdfWordConverterTest {
    }
 
     @Test
+	@Ignore
     public void testWordTags() throws IOException {
         //arrange
         RdfWordConverter converter = new RdfWordConverter();
